@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>星艦蜂群：升級戰線</title>
+    <meta name="theme-color" content="#071019" />
+    <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%23071019"/%3E%3Cpath d="M32 7l19 44-19-10-19 10L32 7z" fill="%2335c4df"/%3E%3Ccircle cx="32" cy="30" r="9" fill="%23f4d35e"/%3E%3C/svg%3E' />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="hud" aria-label="Game status">
+        <div>
+          <span>分數</span>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <span>晶片</span>
+          <strong id="credits">0</strong>
+        </div>
+        <div>
+          <span>波次</span>
+          <strong id="wave">1</strong>
+        </div>
+        <div>
+          <span>生命</span>
+          <strong id="lives">3/3</strong>
+        </div>
+        <div>
+          <span>護盾</span>
+          <strong id="shield">1/1</strong>
+        </div>
+        <div>
+          <span>武器</span>
+          <strong id="weapon">Lv.1</strong>
+        </div>
+        <div>
+          <span>連擊</span>
+          <strong id="combo">0</strong>
+        </div>
+      </section>
+
+      <section class="stage-wrap" aria-label="Space shooter game">
+        <canvas id="game" width="960" height="620"></canvas>
+        <div class="overlay active" id="startOverlay">
+          <div>
+            <p>SPACE BEE SHOOTER</p>
+            <h1>星艦蜂群</h1>
+            <span>擊落外星蜂群取得晶片，波次之間升級武器、飛船、護盾、僚機與推進機動。</span>
+            <button id="startButton" type="button">開始遊戲</button>
+          </div>
+        </div>
+        <div class="overlay" id="waveOverlay">
+          <div>
+            <p>WAVE CLEARED</p>
+            <h2 id="waveTitle">波次清除</h2>
+            <span id="waveText">使用晶片升級後進入下一波。</span>
+            <button id="nextWaveButton" type="button">下一波</button>
+          </div>
+        </div>
+        <div class="overlay" id="gameOverOverlay">
+          <div>
+            <p>MISSION RESULT</p>
+            <h2 id="resultTitle">任務結束</h2>
+            <span id="resultText">分數 0</span>
+            <button id="restartButton" type="button">再玩一次</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Game controls">
+        <button id="leftButton" type="button" aria-label="Move left">←</button>
+        <button id="upButton" type="button" aria-label="Move up">↑</button>
+        <button id="fireButton" type="button" aria-label="Fire">射擊</button>
+        <button id="downButton" type="button" aria-label="Move down">↓</button>
+        <button id="rightButton" type="button" aria-label="Move right">→</button>
+        <button id="specialButton" type="button" aria-label="EMP special">X EMP</button>
+        <button id="pauseButton" type="button" aria-label="Pause">暫停</button>
+      </section>
+
+      <section class="mission-panel" aria-label="Mission status">
+        <article>
+          <span id="storyTitle">第零章：晶片求救訊號</span>
+          <strong id="missionLabel">殲滅航道</strong>
+          <small id="storyText">外環蜂巢正在吞噬失聯殖民站，艦載 AI 要你回收最後的航路資料。</small>
+        </article>
+        <div>
+          <span>任務進度</span>
+          <strong id="missionProgress">0/1</strong>
+        </div>
+        <div>
+          <span>遺物</span>
+          <strong id="relics">0</strong>
+        </div>
+        <div>
+          <span>超載</span>
+          <strong id="overdrive">待命</strong>
+        </div>
+      </section>
+
+      <section class="arsenal-panel" aria-label="One shot weapons">
+        <button data-weapon="nuke" type="button">Z 核彈 0</button>
+        <button data-weapon="pulse" type="button">Q 脈衝 0</button>
+        <button data-weapon="flame" type="button">C 火焰 0</button>
+        <button data-weapon="laser" type="button">V 雷射 0</button>
+        <button data-weapon="freeze" type="button">B 凍結 0</button>
+      </section>
+
+      <section class="upgrade-panel" aria-label="Ship upgrades">
+        <article>
+          <span>武器系統</span>
+          <strong id="weaponLevel">Lv.1</strong>
+          <small>彈數、射速與傷害提升</small>
+          <button class="upgrade-button" data-upgrade="weapon" type="button">Z 升級</button>
+        </article>
+        <article>
+          <span>引擎機動</span>
+          <strong id="engineLevel">Lv.1</strong>
+          <small>提高水平與垂直機動，延長超載</small>
+          <button class="upgrade-button" data-upgrade="engine" type="button">X 升級</button>
+        </article>
+        <article>
+          <span>船體裝甲</span>
+          <strong id="hullLevel">Lv.1</strong>
+          <small>增加最大生命</small>
+          <button class="upgrade-button" data-upgrade="hull" type="button">C 升級</button>
+        </article>
+        <article>
+          <span>能量護盾</span>
+          <strong id="shieldLevel">Lv.1</strong>
+          <small>先抵擋傷害並每波回復</small>
+          <button class="upgrade-button" data-upgrade="shield" type="button">V 升級</button>
+        </article>
+        <article>
+          <span>僚機核心</span>
+          <strong id="droneLevel">Lv.0</strong>
+          <small>自動補射側翼火力</small>
+          <button class="upgrade-button" data-upgrade="drone" type="button">B 升級</button>
+        </article>
+      </section>
+
+      <aside class="tips" aria-label="Keyboard tips">
+        <span>A / ← 左移</span>
+        <span>W / ↑ 上移</span>
+        <span>S / ↓ 下移</span>
+        <span>D / → 右移</span>
+        <span>Space 射擊</span>
+        <span>X EMP</span>
+        <span>Z 核彈</span>
+        <span>Q 脈衝</span>
+        <span>C 火焰</span>
+        <span>V 雷射</span>
+        <span>B 凍結</span>
+        <span>波次結束 Z/X/C/V/B 升級</span>
+        <span>P 暫停</span>
+        <span>R 重開</span>
+      </aside>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

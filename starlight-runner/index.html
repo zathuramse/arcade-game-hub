@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>星光跑者 Starlight Runner</title>
+    <meta name="theme-color" content="#081018" />
+    <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%23081018"/%3E%3Cpath d="M32 7l7 15 16 2-12 11 3 16-14-8-14 8 3-16L9 24l16-2 7-15z" fill="%23ffe65a"/%3E%3Cpath d="M17 49h30v7H17z" fill="%232fffd1"/%3E%3C/svg%3E' />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <section class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <p>ORIGINAL SIDE-SCROLL ADVENTURE</p>
+            <h1>星光跑者</h1>
+          </div>
+        </section>
+        <section class="hud" aria-label="遊戲狀態">
+          <div><span>分數</span><strong id="score">0</strong></div>
+          <div><span>星幣</span><strong id="coins">0</strong></div>
+          <div><span>生命</span><strong id="lives">3</strong></div>
+          <div><span>關卡</span><strong id="level">1-1</strong></div>
+          <div><span>時間</span><strong id="timer">300</strong></div>
+          <div><span>能力</span><strong id="power">無</strong></div>
+        </section>
+      </header>
+
+      <section class="stage-wrap" aria-label="橫向卷軸遊戲">
+        <canvas id="game" width="1280" height="720"></canvas>
+        <div class="overlay active" id="startOverlay">
+          <div>
+            <p>STARLIGHT RUNNER</p>
+            <h2>穿越星塵群島</h2>
+            <span>跳躍、踩敵、撞開星磚、收集星幣與道具。抵達每關終點門後進入下一段冒險。</span>
+            <button id="startButton" type="button">開始冒險</button>
+          </div>
+        </div>
+        <div class="overlay" id="levelOverlay">
+          <div>
+            <p id="levelLabel">COURSE CLEAR</p>
+            <h2 id="levelTitle">關卡突破</h2>
+            <span id="levelText">準備進入下一關。</span>
+            <button id="levelButton" type="button">繼續</button>
+          </div>
+        </div>
+        <div class="overlay" id="gameOverOverlay">
+          <div>
+            <p>RUN ENDED</p>
+            <h2 id="gameOverTitle">冒險結束</h2>
+            <span id="gameOverText">分數 0</span>
+            <button id="restartButton" type="button">重新開始</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="info-row">
+        <article>
+          <span>任務</span>
+          <strong id="missionTitle">抵達終點門</strong>
+          <small id="missionText">善用跳躍緩衝、土狼時間與衝刺通過缺口。</small>
+        </article>
+        <article>
+          <span>檢查點</span>
+          <strong id="checkpointStatus">尚未啟動</strong>
+          <small>碰到星旗後，失誤會從該處復活。</small>
+        </article>
+        <article>
+          <span>操作</span>
+          <strong>鍵盤 / 觸控</strong>
+          <small>A/D 或方向鍵移動；Z 跳躍、X/B 火球、C 衝刺、V 下蹲/進管。</small>
+        </article>
+      </section>
+
+      <section class="touch-controls" aria-label="觸控操作">
+        <button data-hold="left" type="button">◀</button>
+        <button data-hold="right" type="button">▶</button>
+        <button data-hold="down" type="button">V ▼</button>
+        <button data-action="jump" type="button">Z 跳躍</button>
+        <button data-action="fire" type="button">X/B 火球</button>
+        <button data-hold="dash" type="button">C 衝刺</button>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>霓虹蛇域 Neon Snake Arena</title>
+    <meta name="theme-color" content="#071013" />
+    <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="14" fill="%23071013"/%3E%3Cpath d="M14 38c0-13 9-23 22-23h8v10h-8c-7 0-12 5-12 12 0 6 5 11 11 11 7 0 12-5 12-12h10c0 12-9 22-22 22-12 0-21-9-21-20z" fill="%232fffd1"/%3E%3Ccircle cx="47" cy="20" r="5" fill="%23ff3df2"/%3E%3C/svg%3E' />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <p>NEON SNAKE ARENA</p>
+            <h1>霓虹蛇域</h1>
+          </div>
+        </div>
+        <section class="hud" aria-label="狀態">
+          <div><span>分數</span><strong id="score">0</strong></div>
+          <div><span>結晶</span><strong id="crystals">0</strong></div>
+          <div><span>區段</span><strong id="sector">1</strong></div>
+          <div><span>長度</span><strong id="length">6</strong></div>
+          <div><span>連擊</span><strong id="combo">0</strong></div>
+          <div><span>護盾</span><strong id="shield">0</strong></div>
+        </section>
+      </header>
+
+      <section class="game-layout">
+        <aside class="panel left-panel" aria-label="能力">
+          <article>
+            <span>目標</span>
+            <strong id="missionTitle">收集資料核心</strong>
+            <small id="missionText">吃到 8 個核心來開啟下一區段。</small>
+            <div class="meter"><i id="missionMeter"></i></div>
+          </article>
+          <article>
+            <span>蛇體狀態</span>
+            <strong id="statusLabel">穩定</strong>
+            <small id="statusText">方向鍵/WASD 移動；Z 加速、X 專注、C 脈衝、V 相位；升級畫面 Z/X/C/V，B 下一區段。</small>
+          </article>
+          <article>
+            <span>危險等級</span>
+            <strong id="threatLabel">低</strong>
+            <small id="threatText">後續區段會出現脈衝雷、閃電門與傳送裂縫。</small>
+          </article>
+        </aside>
+
+        <section class="stage-wrap" aria-label="遊戲舞台">
+          <canvas id="game" width="1080" height="720"></canvas>
+          <div class="overlay active" id="startOverlay">
+            <div>
+              <p>GRIDBREACH PROTOCOL</p>
+              <h2>用光軌撕開資料迷宮</h2>
+              <span>連續吞噬核心、躲避脈衝雷與閃電門。每個區段後可升級蛇體，撐到高壓區段會觸發守門者戰。</span>
+              <button id="startButton" type="button">開始遊戲</button>
+            </div>
+          </div>
+          <div class="overlay" id="sectorOverlay">
+            <div>
+              <p>SECTOR CLEARED</p>
+              <h2 id="sectorTitle">區段突破</h2>
+              <span id="sectorText">選擇升級後進入下一個區段。</span>
+              <button id="nextButton" type="button">進入下一區段</button>
+            </div>
+          </div>
+          <div class="overlay" id="gameOverOverlay">
+            <div>
+              <p>SIGNAL LOST</p>
+              <h2 id="resultTitle">蛇體崩解</h2>
+              <span id="resultText">分數 0</span>
+              <button id="restartButton" type="button">重新開始</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel right-panel" aria-label="升級">
+          <article>
+            <span>升級艙</span>
+            <strong id="upgradeHint">突破區段後可購買</strong>
+            <small>使用結晶強化速度、磁吸、護盾與相位。</small>
+          </article>
+          <button class="upgrade-button" data-upgrade="engine" type="button">
+            <b>Z ENGINE</b><span id="engineLevel">Lv.1</span><small>轉向緩衝與速度穩定</small>
+          </button>
+          <button class="upgrade-button" data-upgrade="magnet" type="button">
+            <b>X MAGNET</b><span id="magnetLevel">Lv.0</span><small>拉近核心與結晶</small>
+          </button>
+          <button class="upgrade-button" data-upgrade="shield" type="button">
+            <b>C SHIELD</b><span id="shieldLevel">Lv.0</span><small>抵消一次碰撞</small>
+          </button>
+          <button class="upgrade-button" data-upgrade="phase" type="button">
+            <b>V PHASE</b><span id="phaseLevel">Lv.0</span><small>短暫穿越自身與牆面</small>
+          </button>
+        </aside>
+      </section>
+
+      <section class="ability-row" aria-label="能力按鈕">
+        <button id="boostButton" type="button"><b>Z BOOST</b><span id="boostCooldown">Ready</span></button>
+        <button id="focusButton" type="button"><b>X FOCUS</b><span id="focusCooldown">Ready</span></button>
+        <button id="pulseButton" type="button"><b>C PULSE</b><span id="pulseCooldown">Ready</span></button>
+        <button id="phaseButton" type="button"><b>V PHASE</b><span id="phaseCooldown">Locked</span></button>
+      </section>
+
+      <section class="touch-pad" aria-label="觸控方向">
+        <button data-dir="up" type="button" aria-label="上">▲</button>
+        <button data-dir="left" type="button" aria-label="左">◀</button>
+        <button data-dir="down" type="button" aria-label="下">▼</button>
+        <button data-dir="right" type="button" aria-label="右">▶</button>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>霓虹乒乓聯盟 Neon Pong Duel</title>
+    <meta name="theme-color" content="#070b0d" />
+    <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%23070b0d"/%3E%3Crect x="10" y="16" width="9" height="32" rx="4" fill="%232fffd1"/%3E%3Crect x="45" y="16" width="9" height="32" rx="4" fill="%23ff4bd8"/%3E%3Ccircle cx="32" cy="32" r="7" fill="%23ffe66b"/%3E%3C/svg%3E' />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <section class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <p>NEON PONG LEAGUE</p>
+            <h1>霓虹乒乓聯盟</h1>
+          </div>
+        </section>
+        <section class="scoreboard" aria-label="比賽狀態">
+          <div><span>玩家</span><strong id="playerScore">0</strong></div>
+          <div><span>電腦隊</span><strong id="cpuScore">0</strong></div>
+          <div><span>回合</span><strong id="rally">0</strong></div>
+          <div><span>聯盟</span><strong id="league">1/3</strong></div>
+          <div><span>速度</span><strong id="ballSpeed">0</strong></div>
+          <div><span>連勝</span><strong id="streak">0</strong></div>
+        </section>
+      </header>
+
+      <section class="layout">
+        <aside class="panel">
+          <article>
+            <span>玩家戰術</span>
+            <strong id="playerStatus">待命</strong>
+            <small id="playerText">W/S、方向鍵、滑鼠或觸控拖曳移動球拍；B 暫停。</small>
+          </article>
+          <article>
+            <span>能力狀態</span>
+            <strong id="abilityStatus">三招可用</strong>
+            <small id="abilityText">Z 強打、X 慢速、C 護盾、V 發球、B 暫停。</small>
+          </article>
+          <article>
+            <span>道具場</span>
+            <strong id="powerStatus">準備中</strong>
+            <small id="powerText">中央會生成擴拍、多球、曲球、慢速與護盾。</small>
+          </article>
+        </aside>
+
+        <section class="stage-wrap" aria-label="遊戲舞台">
+          <canvas id="game" width="1280" height="720"></canvas>
+          <div class="overlay active" id="startOverlay">
+            <div>
+              <p>ARCADE TEAM DUEL</p>
+              <h2>擊敗三名電腦隊主將</h2>
+              <span>高速反應、技能時機、道具搶奪與 AI 預判會一起決定勝負。每局先拿 7 分，連過三名對手即可稱霸聯盟。</span>
+              <button id="startButton" type="button">開始對戰</button>
+            </div>
+          </div>
+          <div class="overlay" id="roundOverlay">
+            <div>
+              <p id="roundLabel">POINT</p>
+              <h2 id="roundTitle">玩家得分</h2>
+              <span id="roundText">準備下一球。</span>
+              <button id="continueButton" type="button">繼續</button>
+            </div>
+          </div>
+          <div class="overlay" id="matchOverlay">
+            <div>
+              <p id="matchLabel">MATCH RESULT</p>
+              <h2 id="matchTitle">比賽結束</h2>
+              <span id="matchText">結果</span>
+              <button id="matchButton" type="button">下一步</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel ai-panel">
+          <article>
+            <span>電腦隊主將</span>
+            <strong id="aiName">Vector-7</strong>
+            <small id="aiText">高速直線型 AI，會優先守住中心。</small>
+          </article>
+          <article>
+            <span>AI 讀球</span>
+            <strong id="aiRead">校準中</strong>
+            <small id="aiReadText">對手會根據球速、旋轉與落點做預判。</small>
+          </article>
+          <article>
+            <span>支援機</span>
+            <strong id="droneStatus">2 台</strong>
+            <small id="droneText">高階對手會用支援機補位與擋球。</small>
+          </article>
+        </aside>
+      </section>
+
+      <section class="ability-row" aria-label="能力">
+        <button id="strikeButton" type="button"><b>Z STRIKE</b><span id="strikeCooldown">Ready</span></button>
+        <button id="focusButton" type="button"><b>X FOCUS</b><span id="focusCooldown">Ready</span></button>
+        <button id="shieldButton" type="button"><b>C SHIELD</b><span id="shieldCooldown">Ready</span></button>
+        <button id="serveButton" type="button"><b>V SERVE</b><span>B pause</span></button>
+      </section>
+
+      <section class="touch-zone" aria-label="觸控操作">
+        <button data-touch="up" type="button">▲</button>
+        <button data-touch="down" type="button">▼</button>
+        <button data-touch="strike" type="button">強打</button>
+        <button data-touch="shield" type="button">護盾</button>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

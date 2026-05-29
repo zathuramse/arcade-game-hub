@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>遊戲集合面板 Game Hub</title>
+    <meta name="theme-color" content="#090d10" />
+    <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%23090d10"/%3E%3Crect x="10" y="12" width="18" height="18" rx="5" fill="%232fffd1"/%3E%3Crect x="36" y="12" width="18" height="18" rx="5" fill="%23ffe65a"/%3E%3Crect x="10" y="36" width="18" height="18" rx="5" fill="%23ff6d5a"/%3E%3Crect x="36" y="36" width="18" height="18" rx="5" fill="%23b96cff"/%3E%3C/svg%3E' />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="hub-shell">
+      <header class="topbar">
+        <section class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <p>LOCAL ARCADE COLLECTION</p>
+            <h1>遊戲集合面板</h1>
+          </div>
+        </section>
+        <section class="statusbar" aria-label="目前遊戲">
+          <div><span>目前選擇</span><strong id="currentTitle">星光跑者</strong></div>
+          <div><span>類型</span><strong id="currentGenre">橫向卷軸</strong></div>
+          <div><span>位置</span><strong id="currentPath">starlight-runner</strong></div>
+        </section>
+      </header>
+
+      <section class="layout">
+        <aside class="library" aria-label="遊戲清單">
+          <div class="library-head">
+            <h2>遊戲庫</h2>
+            <span id="gameCount">4 款可玩</span>
+          </div>
+          <div class="game-grid" id="gameGrid"></div>
+        </aside>
+
+        <section class="player-panel" aria-label="遊戲播放器">
+          <div class="player-toolbar">
+            <div>
+              <span id="playerEyebrow">READY</span>
+              <h2 id="playerTitle">星光跑者</h2>
+            </div>
+            <div class="toolbar-actions">
+              <button id="reloadButton" type="button">重載</button>
+              <a id="openButton" href="../starlight-runner/index.html" target="_blank" rel="noreferrer">新分頁</a>
+            </div>
+          </div>
+          <div class="frame-wrap">
+            <iframe id="gameFrame" src="../starlight-runner/index.html" title="目前遊戲"></iframe>
+          </div>
+          <div class="player-meta">
+            <p id="playerDescription">原創橫向卷軸平台冒險，支援跳躍、踩敵、金幣、道具、檢查點與背景音樂。</p>
+            <div class="tag-row" id="tagRow"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./launcher.js"></script>
+  </body>
+</html>

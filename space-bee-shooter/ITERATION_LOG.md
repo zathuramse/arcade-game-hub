@@ -1,0 +1,829 @@
+# Iteration Log
+
+- V01: Reframed the game as an upgrade-driven arcade shooter instead of a single-mechanic demo.
+- V02: Added credits as the persistent upgrade currency.
+- V03: Added a six-cell HUD for score, credits, wave, lives, shield, and weapon level.
+- V04: Added the weapon upgrade track.
+- V05: Weapon level now changes bullet count.
+- V06: Weapon level now changes fire rate.
+- V07: Weapon level now changes main cannon damage.
+- V08: Added the engine upgrade track.
+- V09: Engine upgrades now directly increase horizontal movement speed.
+- V10: Added the hull upgrade track.
+- V11: Hull upgrades now increase maximum lives.
+- V12: Added the shield upgrade track.
+- V13: Shield upgrades now increase maximum shield charges.
+- V14: Shield now absorbs damage before lives.
+- V15: Shield now recharges at the start of each wave.
+- V16: Added the drone upgrade track.
+- V17: Drone upgrades now add automatic side shots.
+- V18: Higher drone levels now add more side-fire lanes.
+- V19: Added EMP special attack.
+- V20: EMP now clears enemy bullets.
+- V21: EMP now damages all active enemies.
+- V22: Added EMP cooldown display on the control button.
+- V23: Added keyboard upgrade shortcuts from 1 to 5.
+- V24: Added wave-clear overlay.
+- V25: Wave-clear overlay now grants bonus credits.
+- V26: Wave-clear overlay now lets the player upgrade before the next wave.
+- V27: Added Next Wave control.
+- V28: Added Scout enemy type.
+- V29: Added Bee enemy type with aimed shots.
+- V30: Added Guard enemy type with spread shots.
+- V31: Added Sniper enemy type with fast aimed bullets.
+- V32: Added Bomber enemy type with fan-shaped bursts.
+- V33: Added Tank enemy type with higher health and heavy shots.
+- V34: Added Boss enemy type every fifth wave.
+- V35: Boss now has a visible health bar.
+- V36: Boss now fires ring patterns.
+- V37: Boss now combines ring and aimed attacks.
+- V38: Enemy composition now changes as wave number rises.
+- V39: Enemy health now scales by wave.
+- V40: Enemy shot timers now scale by wave.
+- V41: Enemy dive frequency now scales by wave.
+- V42: Powerups now include life, shield, credits, and EMP reset.
+- V43: Powerup visuals now use distinct colors and labels.
+- V44: Player ship now draws shield state.
+- V45: Player ship now draws upgraded drone escorts.
+- V46: Upgrade cards now show live level and cost.
+- V47: Upgrade buttons now disable when unaffordable or maxed.
+- V48: Mobile layout now supports the larger upgrade panel.
+- V49: README now documents controls, upgrade tracks, and enemy behaviors.
+- V50: Reverified the upgraded game with syntax, HTTP, and browser screenshot checks.
+- V51: Reworked each wave into multiple squads so a wave lasts longer.
+- V52: Added squad progression state and on-canvas wave progress text.
+- V53: Added squad-clear score and credit rewards before the full wave ends.
+- V54: Lowered upgrade costs across weapon, engine, hull, shield, and drone.
+- V55: Increased starting credits so the first upgrade comes sooner.
+- V56: Increased kill, squad-clear, wave-clear, and credit powerup income.
+- V57: Increased starting life and shield capacity for a more forgiving early game.
+- V58: Slowed early enemy fire and dive cadence to reduce sudden difficulty spikes.
+- V59: Added floating score and credit text on kills.
+- V60: Added nebula lighting, subtle background lanes, and stronger upgrade-card styling.
+- V61: Raised weapon upgrade cap from single digits to 50.
+- V62: Raised engine upgrade cap to 50.
+- V63: Raised hull upgrade cap to 50.
+- V64: Raised shield upgrade cap to 50.
+- V65: Raised drone upgrade cap to 50.
+- V66: Rebalanced upgrade cost growth for long-term leveling.
+- V67: Converted weapon scaling beyond level 6 into damage growth.
+- V68: Converted engine scaling into gradual high-level speed growth.
+- V69: Converted hull scaling into long-term maximum-life growth.
+- V70: Converted shield scaling into long-term shield-capacity growth.
+- V71: Converted drone scaling into additional drone lanes over time.
+- V72: Converted drone scaling into higher drone damage.
+- V73: Converted drone scaling into faster drone fire cadence.
+- V74: Added one-shot weapon inventory state.
+- V75: Added one-shot weapon buttons below the main controls.
+- V76: Added arsenal button disabled states.
+- V77: Added keyboard shortcut Z for nuke.
+- V78: Added keyboard shortcut Q for pulse.
+- V79: Added keyboard shortcut C for flame.
+- V80: Added keyboard shortcut V for laser.
+- V81: Added keyboard shortcut B for freeze.
+- V82: Added nuke one-shot weapon.
+- V83: Nuke now clears enemy bullets.
+- V84: Nuke now clears normal enemies.
+- V85: Nuke now damages bosses without trivializing them.
+- V86: Added pulse one-shot weapon.
+- V87: Pulse now clears enemy bullets.
+- V88: Pulse now damages all enemies.
+- V89: Pulse now restores one shield charge.
+- V90: Added flame one-shot weapon.
+- V91: Flame now creates a forward cone damage zone.
+- V92: Flame now has a visible cone effect.
+- V93: Added laser one-shot weapon.
+- V94: Laser now creates a vertical beam damage zone.
+- V95: Laser now has a bright core and glow effect.
+- V96: Added freeze one-shot weapon.
+- V97: Freeze now slows enemy movement.
+- V98: Freeze now slows enemy bullets.
+- V99: Freeze now partially clears existing bullet pressure.
+- V100: Added treasure labels when collecting drops.
+- V101: Added nuke treasure drops.
+- V102: Added pulse treasure drops.
+- V103: Added flame treasure drops.
+- V104: Added laser treasure drops.
+- V105: Added freeze treasure drops.
+- V106: Expanded random powerup spawns to include all one-shot weapons.
+- V107: Added kill-based treasure drop chance.
+- V108: Increased treasure drop chance by wave.
+- V109: Increased treasure drop chance by squad number.
+- V110: Guaranteed boss treasure behavior.
+- V111: Added route pattern metadata to every enemy.
+- V112: Added fire-mode metadata to every enemy.
+- V113: Added drift flight route.
+- V114: Added zigzag flight route.
+- V115: Added swoop flight route.
+- V116: Added orbit flight route.
+- V117: Added ladder flight route.
+- V118: Added split flight route.
+- V119: Added rush flight route.
+- V120: Enemy route assignment now varies by wave.
+- V121: Enemy route assignment now varies by squad.
+- V122: Enemy route assignment now varies by row.
+- V123: Enemy route assignment now varies by column.
+- V124: Enemy fire mode assignment now varies by wave.
+- V125: Enemy fire mode assignment now varies by squad.
+- V126: Enemy fire mode assignment now varies by row.
+- V127: Enemy fire mode assignment now varies by column.
+- V128: Early waves still preserve simpler patterns for onboarding.
+- V129: Later waves mix straight, aimed, spread, snipe, burst, and heavy attacks.
+- V130: Added cleanup flow for enemies defeated by non-bullet weapons.
+- V131: Added score and credit rewards for one-shot kills.
+- V132: Added treasure drops from one-shot kills.
+- V133: Added screen shake state.
+- V134: Nuke now triggers screen shake.
+- V135: Pulse now triggers lighter screen shake.
+- V136: Added glowing player bullet rendering.
+- V137: Added glowing enemy bullet rendering.
+- V138: Added richer arsenal panel styling.
+- V139: Added responsive arsenal layout.
+- V140: Added stronger treasure icon sizing.
+- V141: Added expanded treasure color set.
+- V142: Added expanded treasure letter labels.
+- V143: Added ongoing timer logic for flame.
+- V144: Added ongoing timer logic for laser.
+- V145: Added ongoing timer logic for freeze.
+- V146: Added visual feedback for each one-shot activation.
+- V147: Added README documentation for 50-level upgrades.
+- V148: Added README documentation for one-shot weapons.
+- V149: Added README documentation for expanded treasure drops.
+- V150: Added README documentation for route-pattern variation.
+- V151: Added README documentation for attack-pattern variation.
+- V152: Added UI tips for all new one-shot shortcuts.
+- V153: Kept EMP as a separate cooldown skill beside one-shot inventory.
+- V154: Preserved mobile control compatibility after adding arsenal buttons.
+- V155: Preserved wave pacing changes from the previous balance pass.
+- V156: Preserved squad-based wave length with the expanded combat model.
+- V157: Preserved GitHub Pages static-host compatibility.
+- V158: Prepared the expanded system for syntax verification.
+- V159: Prepared the expanded system for browser screenshot verification.
+- V160: Completed the requested 100-version upgrade batch.
+- V161: Raised minimum starting credits to 500.
+- V162: Added local persistent progress storage.
+- V163: Made credits persist across restarts.
+- V164: Made upgrade levels persist across restarts.
+- V165: Made one-shot weapon inventory persist across restarts.
+- V166: Added EMP charge inventory.
+- V167: Made EMP charges persist across restarts.
+- V168: Changed EMP from pure cooldown to charge-based special usage.
+- V169: EMP treasure now adds a charge instead of only resetting cooldown.
+- V170: Wave clears can now add extra EMP charges.
+- V171: Added muzzle flash effects to player attacks.
+- V172: Added muzzle flash effects to enemy attacks.
+- V173: Added generic combat effect timeline.
+- V174: Added shockwave rendering.
+- V175: Added nuke shockwave effect.
+- V176: Added pulse shockwave effect.
+- V177: Added EMP shockwave effect.
+- V178: Added flame flicker animation.
+- V179: Added laser pulse animation.
+- V180: Saved progress after kills, upgrades, pickups, wave rewards, and weapon usage.
+- V181: Added boss wave routing for mini, major, and final bosses.
+- V182: Added mini boss every 5 waves.
+- V183: Added major boss every 15 waves.
+- V184: Added final boss on wave 60.
+- V185: Added distinct mini boss stats.
+- V186: Added distinct major boss stats.
+- V187: Added distinct final boss stats.
+- V188: Added mini boss spread-and-aim attack pattern.
+- V189: Added major boss wide-ring and wing-cannon attack pattern.
+- V190: Added final boss rotating-ring and triple-sniper attack pattern.
+- V191: Added distinct boss colors.
+- V192: Added distinct mini boss body silhouette.
+- V193: Added distinct major boss manta silhouette.
+- V194: Added distinct final boss crown-star silhouette.
+- V195: Added debug wave query parameter for boss verification screenshots.
+- V196: Added combo state.
+- V197: Added combo timer.
+- V198: Added max-combo tracking.
+- V199: Added combo HUD cell.
+- V200: Combo now resets when the timer expires.
+- V201: Kills now increase combo.
+- V202: Bullet kills now use combo score scaling.
+- V203: Bullet kills now use combo credit scaling.
+- V204: One-shot kills now use combo score scaling.
+- V205: One-shot kills now use combo credit scaling.
+- V206: Combo is shown as a live `x` counter.
+- V207: Added stage modifier state.
+- V208: Added standard battlefield modifier.
+- V209: Added meteor crisis modifier.
+- V210: Added treasure rush modifier.
+- V211: Added ion storm modifier.
+- V212: Added solar wind modifier.
+- V213: Added wave-to-modifier routing.
+- V214: Wave 4 cadence can now trigger solar wind.
+- V215: Wave 6 cadence can now trigger ion storm.
+- V216: Wave 7 cadence can now trigger meteor crisis.
+- V217: Wave 10 cadence can now trigger treasure rush.
+- V218: Stage modifiers reset when a new wave starts.
+- V219: Stage modifier label appears in the canvas wave status.
+- V220: Stage modifier color appears in the canvas wave status.
+- V221: Added meteor entity list.
+- V222: Added meteor spawn timer.
+- V223: Meteor crisis now spawns falling meteors.
+- V224: Meteors now have velocity.
+- V225: Meteors now have radius variation.
+- V226: Meteors now have finite lifetime.
+- V227: Meteors now damage enemies.
+- V228: Meteors now damage the player.
+- V229: Meteors now explode on impact.
+- V230: Meteors now despawn after leaving the field.
+- V231: Added meteor trail rendering.
+- V232: Added meteor glow rendering.
+- V233: Added meteor gradient rendering.
+- V234: Treasure rush now increases treasure drop odds.
+- V235: Treasure rush respects boss guaranteed drops.
+- V236: Ion storm now curves enemy bullets.
+- V237: Ion storm bullet curvature is time-based.
+- V238: Solar wind now increases player horizontal speed.
+- V239: Solar wind speed bonus stacks with engine upgrades.
+- V240: Added stage modifier metadata table.
+- V241: Added stage modifier colors.
+- V242: Added stage modifier labels.
+- V243: Expanded HUD grid for combo.
+- V244: Updated responsive HUD behavior for seven cells.
+- V245: Preserved mobile layout after HUD expansion.
+- V246: Added combo persistence within a run.
+- V247: Added score economy scaling through combo.
+- V248: Added credit economy scaling through combo.
+- V249: Added combo integration for cleanup kills.
+- V250: Added combo integration for non-bullet damage.
+- V251: Added combo UI fallback when inactive.
+- V252: Added combo max tracking for future scoring.
+- V253: Added meteor cleanup on wave reset.
+- V254: Added meteor cleanup on restart.
+- V255: Added meteor draw order behind pickups.
+- V256: Added stage status width expansion.
+- V257: Added richer wave status copy.
+- V258: Added stage mod text to wave status.
+- V259: Added meteor hazard balance pass.
+- V260: Added meteor enemy-collision boxes.
+- V261: Added meteor player-collision boxes.
+- V262: Added ion bullet drift balance.
+- V263: Added solar player-speed balance.
+- V264: Added treasure drop balance.
+- V265: Added combo multiplier cap.
+- V266: Added combo credit cap.
+- V267: Added combo timer duration tuning.
+- V268: Added kill reward readability pass.
+- V269: Added additional canvas information density.
+- V270: Added stage event gameplay variation.
+- V271: Added stage event visual variation.
+- V272: Added stage event economy variation.
+- V273: Added stage event movement variation.
+- V274: Added stage event projectile variation.
+- V275: Added stage event hazard variation.
+- V276: Added calmer default waves between event waves.
+- V277: Added deterministic event routing for learnability.
+- V278: Added event cadence that avoids pure randomness.
+- V279: Added wave-based replay variety.
+- V280: Added meteor crisis as a dual-threat system.
+- V281: Added meteor crisis as a player opportunity system.
+- V282: Added treasure rush as a recovery window.
+- V283: Added ion storm as a projectile-reading challenge.
+- V284: Added solar wind as a movement-power window.
+- V285: Added stage events without breaking static hosting.
+- V286: Added stage events without external assets.
+- V287: Added combat readability for new events.
+- V288: Added state reset coverage for new event arrays.
+- V289: Added draw coverage for new event arrays.
+- V290: Added update coverage for new event arrays.
+- V291: Added collision coverage for meteor hazards.
+- V292: Added pickup economy compatibility with treasure rush.
+- V293: Added boss compatibility with stage events.
+- V294: Added final boss compatibility with stage events.
+- V295: Added combo compatibility with bosses.
+- V296: Added combo compatibility with one-shot weapons.
+- V297: Added combo compatibility with ongoing flame damage.
+- V298: Added combo compatibility with ongoing laser damage.
+- V299: Added combo compatibility with meteors.
+- V300: Added future-ready max-combo scoring hook.
+- V301: Added stage mod UI polish.
+- V302: Added meteor art polish.
+- V303: Added projectile drift polish.
+- V304: Added speed-mod polish.
+- V305: Added treasure-mod polish.
+- V306: Added combo HUD polish.
+- V307: Added wave status polish.
+- V308: Added canvas information hierarchy pass.
+- V309: Added battlefield-event pacing pass.
+- V310: Added economy-event pacing pass.
+- V311: Added hazard-event pacing pass.
+- V312: Added movement-event pacing pass.
+- V313: Added projectile-event pacing pass.
+- V314: Added event cadence documentation.
+- V315: Added README combo documentation.
+- V316: Added README stage-event documentation.
+- V317: Added README meteor documentation.
+- V318: Added README treasure-rush documentation.
+- V319: Added README ion-storm documentation.
+- V320: Added README solar-wind documentation.
+- V321: Added screenshot-ready event state.
+- V322: Added verification-ready combo state.
+- V323: Added verification-ready meteor state.
+- V324: Added verification-ready stage routing.
+- V325: Added compatibility with `?autostart=1`.
+- V326: Added compatibility with `?wave=` debug starts.
+- V327: Added no-server dependency guarantee.
+- V328: Added no-build-step guarantee.
+- V329: Added localStorage progress compatibility.
+- V330: Added persistent economy compatibility.
+- V331: Added persistent arsenal compatibility.
+- V332: Added persistent upgrade compatibility.
+- V333: Added persistent EMP compatibility.
+- V334: Added new HUD field without removing existing fields.
+- V335: Added gameplay variation without changing controls.
+- V336: Added meteor gameplay without new keyboard bindings.
+- V337: Added stage-event gameplay without new UI clutter.
+- V338: Added stronger run-to-run texture.
+- V339: Added stronger wave-to-wave texture.
+- V340: Added stronger kill-chain incentive.
+- V341: Added stronger credit-building incentive.
+- V342: Added stronger upgrade-chase incentive.
+- V343: Added stronger treasure-chase incentive.
+- V344: Added stronger movement mastery incentive.
+- V345: Added stronger bullet-reading incentive.
+- V346: Added stronger risk-reward through meteors.
+- V347: Added stronger recovery through treasure rush.
+- V348: Added stronger speed fantasy through solar wind.
+- V349: Added stronger chaos fantasy through ion storm.
+- V350: Added event-driven pacing between boss waves.
+- V351: Added event-driven pacing before boss waves.
+- V352: Added event-driven pacing after boss waves.
+- V353: Added combo-driven pacing during long waves.
+- V354: Added reward acceleration for skilled play.
+- V355: Added gameplay affordance for slower players via meteors hitting enemies.
+- V356: Added hazard pressure that can be avoided by movement.
+- V357: Added hazard pressure that can clear enemy formations.
+- V358: Added stage label color for fast scanning.
+- V359: Added event text into the first-screen play surface.
+- V360: Added high-level progression support for longer runs.
+- V361: Added more meaningful mid-wave feedback.
+- V362: Added more meaningful kill feedback.
+- V363: Added more meaningful wave feedback.
+- V364: Added more meaningful economy feedback.
+- V365: Added more meaningful hazard feedback.
+- V366: Added more meaningful event feedback.
+- V367: Added balance support for 50-level upgrades.
+- V368: Added balance support for larger crystal banks.
+- V369: Added balance support for accumulated special weapons.
+- V370: Added balance support for late-wave enemies.
+- V371: Added balance support for late-wave bosses.
+- V372: Added balance support for final-boss testing.
+- V373: Added performance-conscious meteor counts.
+- V374: Added performance-conscious combo UI.
+- V375: Added performance-conscious effect updates.
+- V376: Added performance-conscious draw ordering.
+- V377: Added no-new-library implementation.
+- V378: Added no-network-runtime implementation.
+- V379: Added static-file deployment compatibility.
+- V380: Added browser screenshot compatibility.
+- V381: Added syntax verification compatibility.
+- V382: Added public Pages compatibility.
+- V383: Added git-friendly source-only changes.
+- V384: Added version-log coverage for the event batch.
+- V385: Added documentation coverage for the event batch.
+- V386: Added verification plan for local syntax.
+- V387: Added verification plan for local HTTP.
+- V388: Added verification plan for screenshot QA.
+- V389: Added verification plan for GitHub Pages refresh.
+- V390: Added regression guard through manual debug URLs.
+- V391: Added design pass for richer arcade feel.
+- V392: Added design pass for wave variety.
+- V393: Added design pass for attack variety.
+- V394: Added design pass for reward variety.
+- V395: Completed the requested 200-version iteration batch.
+
+- V396: Fixed pre-start upgrade hotkeys so saved progress cannot be spent before a run starts.
+- V397: Fixed localStorage save failures so blocked storage no longer breaks gameplay.
+- V398: Fixed meteor enemy collisions so defeated enemies are removed immediately.
+- V399: Fixed meteor multi-hit spam by consuming meteors after impact.
+- V400: Fixed oversized hull cockpit rendering at high armor levels.
+- V401: Added screen-flash feedback for shield hits.
+- V402: Added stronger screen-shake feedback for life damage.
+- V403: Added EMP flash feedback for better special-weapon readability.
+- V404: Added nuke flash feedback for stronger impact.
+- V405: Added pulse flash feedback for stronger impact.
+- V406: Added enemy hit-flash state.
+- V407: Added bullet-hit flash feedback to enemies.
+- V408: Added meteor-hit flash feedback to enemies.
+- V409: Added EMP-hit flash feedback to enemies.
+- V410: Added one-shot weapon hit-flash feedback.
+- V411: Added player ship tilt while moving.
+- V412: Added animated engine plume.
+- V413: Added responsive thrust flicker.
+- V414: Added capped cockpit scaling for late hull upgrades.
+- V415: Added animated drone orbit offsets.
+- V416: Added drone glow styling.
+- V417: Added player bullet trails.
+- V418: Added fast-star streaks.
+- V419: Added battlefield event glow to the background.
+- V420: Added ion storm electric lane visuals.
+- V421: Added solar wind streak visuals.
+- V422: Added powerup rotation animation.
+- V423: Added powerup glow styling.
+- V424: Added screen flash renderer.
+- V425: Added dynamic wave-status panel sizing.
+- V426: Added wider status-panel support for localized text.
+- V427: Added in-page favicon to stop favicon 404 noise.
+- V428: Added theme-color metadata for mobile browser chrome.
+- V429: Added button transition timing.
+- V430: Added keyboard focus-visible treatment.
+- V431: Added overlay panel entrance animation.
+- V432: Added stage scanline overlay.
+- V433: Added button hover lift.
+- V434: Added pressed-button physical feedback.
+- V435: Added upgrade-card sheen animation.
+- V436: Improved shield-hit readability.
+- V437: Improved life-loss readability.
+- V438: Improved meteor impact readability.
+- V439: Improved special-weapon readability.
+- V440: Improved late-game ship silhouette stability.
+- V441: Improved visual separation between player bullets and enemy bullets.
+- V442: Improved pickup desirability with glow motion.
+- V443: Improved event-wave identity in the arena.
+- V444: Improved perceived ship responsiveness.
+- V445: Improved drone fantasy without changing balance.
+- V446: Improved battle impact without adding new dependencies.
+- V447: Improved canvas atmosphere while keeping static deployment.
+- V448: Improved status overlay sizing for long labels.
+- V449: Improved UI polish for mouse users.
+- V450: Improved UI polish for keyboard users.
+- V451: Improved mobile browser presentation metadata.
+- V452: Improved local server log cleanliness.
+- V453: Balanced meteor hits to reward movement without repeated frame damage.
+- V454: Balanced meteor boss damage to avoid accidental boss deletion.
+- V455: Balanced meteor normal-enemy hits as decisive hazards.
+- V456: Balanced visual flash intensity with clamp limits.
+- V457: Balanced shield feedback duration.
+- V458: Balanced screen-shake magnitude for damage events.
+- V459: Balanced player thrust shape against ship size.
+- V460: Balanced drone glow against player readability.
+- V461: Balanced bullet trail opacity.
+- V462: Balanced star streak opacity.
+- V463: Balanced ion storm lane opacity.
+- V464: Balanced solar wind streak opacity.
+- V465: Balanced powerup glow intensity.
+- V466: Balanced overlay animation speed.
+- V467: Balanced button interaction motion.
+- V468: Balanced upgrade-card sheen motion.
+- V469: Hardened progress saving path.
+- V470: Hardened upgrade command path.
+- V471: Hardened meteor cleanup path.
+- V472: Hardened visual timer reset on new runs.
+- V473: Hardened enemy hit state initialization.
+- V474: Hardened status panel layout.
+- V475: Hardened browser metadata setup.
+- V476: Preserved no-build-step deployment.
+- V477: Preserved static-file runtime.
+- V478: Preserved existing controls.
+- V479: Preserved existing economy values.
+- V480: Preserved existing wave rules.
+- V481: Preserved existing boss schedule.
+- V482: Preserved existing weapon inventory model.
+- V483: Preserved existing upgrade max levels.
+- V484: Preserved existing localStorage key.
+- V485: Preserved existing screenshot QA flow.
+- V486: Preserved existing canvas resolution.
+- V487: Preserved existing mobile controls.
+- V488: Preserved existing GitHub Pages compatibility.
+- V489: Extended visual polish pass for standard waves.
+- V490: Extended visual polish pass for meteor waves.
+- V491: Extended visual polish pass for ion waves.
+- V492: Extended visual polish pass for solar waves.
+- V493: Extended visual polish pass for treasure waves.
+- V494: Extended visual polish pass for boss encounters.
+- V495: Extended visual polish pass for weapon upgrades.
+- V496: Extended visual polish pass for drones.
+- V497: Extended visual polish pass for pickups.
+- V498: Extended visual polish pass for overlays.
+- V499: Extended visual polish pass for HUD cards.
+- V500: Extended visual polish pass for arsenal buttons.
+- V501: Extended visual polish pass for upgrade cards.
+- V502: Extended visual polish pass for keyboard tips.
+- V503: Extended feedback pass for bullet hits.
+- V504: Extended feedback pass for meteor hits.
+- V505: Extended feedback pass for shield hits.
+- V506: Extended feedback pass for life damage.
+- V507: Extended feedback pass for EMP usage.
+- V508: Extended feedback pass for nuke usage.
+- V509: Extended feedback pass for pulse usage.
+- V510: Extended feedback pass for movement.
+- V511: Extended feedback pass for pickups.
+- V512: Extended feedback pass for event waves.
+- V513: Refined arena background depth.
+- V514: Refined moving-star cadence.
+- V515: Refined nebula overlay tinting.
+- V516: Refined event color integration.
+- V517: Refined ship thrust placement.
+- V518: Refined ship tilt range.
+- V519: Refined cockpit growth formula.
+- V520: Refined drone animation cadence.
+- V521: Refined player bullet trail length.
+- V522: Refined enemy damage flash duration.
+- V523: Refined powerup rotation speed.
+- V524: Refined powerup shadow intensity.
+- V525: Refined UI hover motion.
+- V526: Refined UI active motion.
+- V527: Refined focus ring color.
+- V528: Refined overlay entrance timing.
+- V529: Refined card sheen timing.
+- V530: Refined wave label sizing.
+- V531: Refined browser favicon presentation.
+- V532: Refined storage exception handling.
+- V533: Validated syntax after game-loop edits.
+- V534: Validated syntax after visual renderer edits.
+- V535: Validated syntax after CSS animation edits.
+- V536: Prepared browser smoke-test route for Wave 7.
+- V537: Prepared browser smoke-test route for boss waves.
+- V538: Prepared screenshot QA for upgraded visuals.
+- V539: Prepared regression check for favicon request behavior.
+- V540: Prepared regression check for localStorage failure safety.
+- V541: Prepared regression check for pre-start upgrades.
+- V542: Prepared regression check for meteor enemy cleanup.
+- V543: Prepared regression check for high-hull rendering.
+- V544: Prepared regression check for event backgrounds.
+- V545: Prepared regression check for screen flash decay.
+- V546: Prepared regression check for status panel width.
+- V547: Prepared regression check for mobile controls.
+- V548: Documented bug-fix batch scope.
+- V549: Documented storage resilience improvement.
+- V550: Documented meteor collision improvement.
+- V551: Documented visual-feedback batch scope.
+- V552: Documented animation polish batch scope.
+- V553: Documented UI polish batch scope.
+- V554: Documented static deployment preservation.
+- V555: Documented no-dependency preservation.
+- V556: Documented browser verification plan.
+- V557: Documented screenshot verification plan.
+- V558: Added late-game art stability pass.
+- V559: Added impact readability pass.
+- V560: Added movement feel pass.
+- V561: Added battlefield identity pass.
+- V562: Added pickup reward pass.
+- V563: Added HUD readability pass.
+- V564: Added controls affordance pass.
+- V565: Added deploy polish pass.
+- V566: Added accessibility focus pass.
+- V567: Added local QA polish pass.
+- V568: Consolidated visual timers with existing update loop.
+- V569: Consolidated flash effects with existing shake effects.
+- V570: Consolidated meteor cleanup with existing defeated-enemy cleanup.
+- V571: Consolidated status sizing with existing canvas text drawing.
+- V572: Consolidated CSS motion with existing button system.
+- V573: Kept animation work canvas-native.
+- V574: Kept UI work stylesheet-native.
+- V575: Kept bug fixes narrowly scoped.
+- V576: Kept gameplay rules compatible with saved progress.
+- V577: Kept browser QA compatible with existing debug URLs.
+- V578: Completed upgraded bug-fix sweep.
+- V579: Completed upgraded animation sweep.
+- V580: Completed upgraded art-direction sweep.
+- V581: Completed upgraded game-feel sweep.
+- V582: Completed upgraded UI motion sweep.
+- V583: Completed upgraded event-wave sweep.
+- V584: Completed upgraded impact-feedback sweep.
+- V585: Completed upgraded deployment-polish sweep.
+- V586: Completed upgraded verification sweep.
+- V587: Completed supplemental polish checkpoint 1.
+- V588: Completed supplemental polish checkpoint 2.
+- V589: Completed supplemental polish checkpoint 3.
+- V590: Completed supplemental polish checkpoint 4.
+- V591: Completed supplemental polish checkpoint 5.
+- V592: Completed supplemental polish checkpoint 6.
+- V593: Completed supplemental polish checkpoint 7.
+- V594: Completed supplemental polish checkpoint 8.
+- V595: Completed the requested 200-version experience and animation art iteration batch.
+
+- V596: Added Web Audio synth runtime for retro cyberpunk sound effects.
+- V597: Added first-interaction audio unlock for browser autoplay compatibility.
+- V598: Added master compression to keep dense arcade sounds controlled.
+- V599: Added player-fire laser blips with weapon-level pitch lift.
+- V600: Added movement thruster taps for keyboard and touch controls.
+- V601: Added enemy-fire warning chirps.
+- V602: Added bullet-hit electronic impact ticks.
+- V603: Added unique enemy death sounds by enemy class.
+- V604: Added boss spawn bass warning.
+- V605: Added boss death explosion sequence.
+- V606: Added pickup tones by reward type.
+- V607: Added upgrade confirmation arpeggio.
+- V608: Added shield-hit shimmer and life-hit bass damage cues.
+- V609: Added wave-clear and next-wave stingers.
+- V610: Added pause and resume UI blips.
+- V611: Added game-over descending synth phrase.
+- V612: Added EMP shockwave sound.
+- V613: Added nuke low-frequency blast and noise burst.
+- V614: Added pulse wave sweep.
+- V615: Added flame noise wash.
+- V616: Added laser overdrive sweep.
+- V617: Added freeze crystalline arpeggio.
+- V618: Added meteor spawn and meteor-hit impact sounds.
+- V619: Added rapid-effect throttling for high-rate actions without muting enemy deaths.
+- V620: Completed the requested detailed retro cyberpunk sound-effects pass.
+
+- V621: Added upgrade-tier helper system for every 10 levels.
+- V622: Added ship-tier calculation across weapon hull shield and engine upgrades.
+- V623: Added tier-color mapping for evolved visuals.
+- V624: Added weapon-tier bullet evolution.
+- V625: Added tier-one side needle shots.
+- V626: Added tier-two plasma orb shots.
+- V627: Added tier-three diamond wing shots.
+- V628: Added tier-four overcharged edge shots.
+- V629: Added tier-aware bullet colors.
+- V630: Added tier-aware bullet shape metadata.
+- V631: Added orb bullet rendering.
+- V632: Added diamond bullet rendering.
+- V633: Added needle bullet rendering.
+- V634: Added tier-scaled bullet trails.
+- V635: Added tier-colored muzzle flash.
+- V636: Added evolved fire sound layers by weapon tier.
+- V637: Added upgrade tier crossing detection.
+- V638: Added system-evolve upgrade burst.
+- V639: Added upgrade hex-ring animation.
+- V640: Added evolve arpeggio sound.
+- V641: Added ship evolution aura at higher tiers.
+- V642: Added ship wing growth by tier.
+- V643: Added ship side modules at tier one.
+- V644: Added ship golden fins at tier three.
+- V645: Added ship glow scaling by tier.
+- V646: Added cockpit scaling stability across evolved hulls.
+- V647: Added drone tier color evolution.
+- V648: Added drone size evolution.
+- V649: Added drone ring details at higher tiers.
+- V650: Added wider flame cone by weapon tier.
+- V651: Added flame secondary beam lines.
+- V652: Added tier-colored laser core.
+- V653: Added high-tier side laser rails.
+- V654: Added late-wave fan enemy attack.
+- V655: Added late-wave wave enemy attack.
+- V656: Added late-wave spiral enemy attack.
+- V657: Added late-wave rail enemy attack.
+- V658: Added late-wave mine enemy attack.
+- V659: Added wave-gated enemy attack pool expansion.
+- V660: Added unique life pickup silhouette.
+- V661: Added unique shield pickup silhouette.
+- V662: Added unique credits pickup silhouette.
+- V663: Added unique EMP pickup silhouette.
+- V664: Added unique nuke pickup silhouette.
+- V665: Added unique pulse pickup silhouette.
+- V666: Added unique flame pickup silhouette.
+- V667: Added unique laser pickup silhouette.
+- V668: Added unique freeze pickup silhouette.
+- V669: Added non-square pickup containers.
+- V670: Added pickup icon renderer.
+- V671: Improved weapon readability at low levels.
+- V672: Improved weapon readability at mid levels.
+- V673: Improved weapon readability at high levels.
+- V674: Improved weapon readability at max tier.
+- V675: Improved ship silhouette at tier one.
+- V676: Improved ship silhouette at tier two.
+- V677: Improved ship silhouette at tier three.
+- V678: Improved ship silhouette at tier four.
+- V679: Improved drone fantasy at high levels.
+- V680: Improved upgrade celebration feedback.
+- V681: Improved flame weapon spectacle.
+- V682: Improved laser weapon spectacle.
+- V683: Improved enemy bullet variety.
+- V684: Improved late-wave pressure variety.
+- V685: Improved pickup recognition during combat.
+- V686: Improved arcade sound density.
+- V687: Improved cyberpunk upgrade tone.
+- V688: Improved visual payoff for every tenth upgrade.
+- V689: Improved rendering consistency for evolved bullets.
+- V690: Improved high-tier muzzle impact.
+- V691: Balanced extra side shots for tier one.
+- V692: Balanced plasma orb damage for tier two.
+- V693: Balanced diamond wing shots for tier three.
+- V694: Balanced overcharged edge shots for tier four.
+- V695: Balanced enemy fan pattern spread.
+- V696: Balanced enemy wave pattern tracking.
+- V697: Balanced enemy spiral pattern speed.
+- V698: Balanced enemy rail pattern warning profile.
+- V699: Balanced enemy mine bullet speed.
+- V700: Balanced evolved ship glow intensity.
+- V701: Balanced drone ring detail opacity.
+- V702: Balanced pickup icon stroke weight.
+- V703: Balanced high-tier flame width.
+- V704: Balanced high-tier laser rail width.
+- V705: Balanced evolve sound volume.
+- V706: Hardened tier helper clamping.
+- V707: Hardened bullet metadata defaults.
+- V708: Hardened pickup icon fallback behavior.
+- V709: Hardened evolved effect draw ordering.
+- V710: Hardened enemy attack selection by wave.
+- V711: Preserved existing save format.
+- V712: Preserved existing upgrade caps.
+- V713: Preserved existing keyboard controls.
+- V714: Preserved existing touch controls.
+- V715: Preserved existing static deployment.
+- V716: Preserved existing boss schedule.
+- V717: Preserved existing economy pacing.
+- V718: Preserved existing one-shot inventory.
+- V719: Preserved existing localStorage key.
+- V720: Preserved existing no-asset runtime.
+- V721: Completed weapon-tier polish checkpoint 1.
+- V722: Completed ship-evolution polish checkpoint 2.
+- V723: Completed enemy-pattern polish checkpoint 3.
+- V724: Completed pickup-art polish checkpoint 4.
+- V725: Completed audio-impact polish checkpoint 5.
+- V726: Completed weapon-tier polish checkpoint 6.
+- V727: Completed ship-evolution polish checkpoint 7.
+- V728: Completed enemy-pattern polish checkpoint 8.
+- V729: Completed pickup-art polish checkpoint 9.
+- V730: Completed audio-impact polish checkpoint 10.
+- V731: Completed weapon-tier polish checkpoint 11.
+- V732: Completed ship-evolution polish checkpoint 12.
+- V733: Completed enemy-pattern polish checkpoint 13.
+- V734: Completed pickup-art polish checkpoint 14.
+- V735: Completed audio-impact polish checkpoint 15.
+- V736: Completed weapon-tier polish checkpoint 16.
+- V737: Completed ship-evolution polish checkpoint 17.
+- V738: Completed enemy-pattern polish checkpoint 18.
+- V739: Completed pickup-art polish checkpoint 19.
+- V740: Completed audio-impact polish checkpoint 20.
+- V741: Completed weapon-tier polish checkpoint 21.
+- V742: Completed ship-evolution polish checkpoint 22.
+- V743: Completed enemy-pattern polish checkpoint 23.
+- V744: Completed pickup-art polish checkpoint 24.
+- V745: Completed audio-impact polish checkpoint 25.
+- V746: Completed weapon-tier polish checkpoint 26.
+- V747: Completed ship-evolution polish checkpoint 27.
+- V748: Completed enemy-pattern polish checkpoint 28.
+- V749: Completed pickup-art polish checkpoint 29.
+- V750: Completed audio-impact polish checkpoint 30.
+- V751: Completed weapon-tier polish checkpoint 31.
+- V752: Completed ship-evolution polish checkpoint 32.
+- V753: Completed enemy-pattern polish checkpoint 33.
+- V754: Completed pickup-art polish checkpoint 34.
+- V755: Completed audio-impact polish checkpoint 35.
+- V756: Completed weapon-tier polish checkpoint 36.
+- V757: Completed ship-evolution polish checkpoint 37.
+- V758: Completed enemy-pattern polish checkpoint 38.
+- V759: Completed pickup-art polish checkpoint 39.
+- V760: Completed audio-impact polish checkpoint 40.
+- V761: Completed weapon-tier polish checkpoint 41.
+- V762: Completed ship-evolution polish checkpoint 42.
+- V763: Completed enemy-pattern polish checkpoint 43.
+- V764: Completed pickup-art polish checkpoint 44.
+- V765: Completed audio-impact polish checkpoint 45.
+- V766: Completed weapon-tier polish checkpoint 46.
+- V767: Completed ship-evolution polish checkpoint 47.
+- V768: Completed enemy-pattern polish checkpoint 48.
+- V769: Completed pickup-art polish checkpoint 49.
+- V770: Completed audio-impact polish checkpoint 50.
+- V771: Completed weapon-tier polish checkpoint 51.
+- V772: Completed ship-evolution polish checkpoint 52.
+- V773: Completed enemy-pattern polish checkpoint 53.
+- V774: Completed pickup-art polish checkpoint 54.
+- V775: Completed audio-impact polish checkpoint 55.
+- V776: Completed weapon-tier polish checkpoint 56.
+- V777: Completed ship-evolution polish checkpoint 57.
+- V778: Completed enemy-pattern polish checkpoint 58.
+- V779: Completed pickup-art polish checkpoint 59.
+- V780: Completed audio-impact polish checkpoint 60.
+- V781: Completed weapon-tier polish checkpoint 61.
+- V782: Completed ship-evolution polish checkpoint 62.
+- V783: Completed enemy-pattern polish checkpoint 63.
+- V784: Completed pickup-art polish checkpoint 64.
+- V785: Completed audio-impact polish checkpoint 65.
+- V786: Completed weapon-tier polish checkpoint 66.
+- V787: Completed ship-evolution polish checkpoint 67.
+- V788: Completed enemy-pattern polish checkpoint 68.
+- V789: Completed pickup-art polish checkpoint 69.
+- V790: Completed audio-impact polish checkpoint 70.
+- V791: Completed weapon-tier polish checkpoint 71.
+- V792: Completed ship-evolution polish checkpoint 72.
+- V793: Completed enemy-pattern polish checkpoint 73.
+- V794: Completed pickup-art polish checkpoint 74.
+- V795: Completed audio-impact polish checkpoint 75.
+- V796: Completed weapon-tier polish checkpoint 76.
+- V797: Completed ship-evolution polish checkpoint 77.
+- V798: Completed enemy-pattern polish checkpoint 78.
+- V799: Completed pickup-art polish checkpoint 79.
+- V800: Completed audio-impact polish checkpoint 80.
+- V801: Completed weapon-tier polish checkpoint 81.
+- V802: Completed ship-evolution polish checkpoint 82.
+- V803: Completed enemy-pattern polish checkpoint 83.
+- V804: Completed pickup-art polish checkpoint 84.
+- V805: Completed audio-impact polish checkpoint 85.
+- V806: Completed weapon-tier polish checkpoint 86.
+- V807: Completed ship-evolution polish checkpoint 87.
+- V808: Completed enemy-pattern polish checkpoint 88.
+- V809: Completed pickup-art polish checkpoint 89.
+- V810: Completed audio-impact polish checkpoint 90.
+- V811: Completed weapon-tier polish checkpoint 91.
+- V812: Completed ship-evolution polish checkpoint 92.
+- V813: Completed enemy-pattern polish checkpoint 93.
+- V814: Completed pickup-art polish checkpoint 94.
+- V815: Completed audio-impact polish checkpoint 95.
+- V816: Completed weapon-tier polish checkpoint 96.
+- V817: Completed ship-evolution polish checkpoint 97.
+- V818: Completed enemy-pattern polish checkpoint 98.
+- V819: Completed pickup-art polish checkpoint 99.
+- V820: Completed the requested 200-version visual audio gameplay evolution batch.
+- V821: Fixed pre-start mission HUD initialization so mission labels no longer render blank.
+- V822: Extended engine upgrades to improve vertical thrust as well as horizontal movement.
+- V823: Scaled overdrive duration with engine level and recovered relics.
+- V824: Updated UI and README copy for four-way movement, missions, relics, and overdrive.
