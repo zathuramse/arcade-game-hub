@@ -1384,18 +1384,42 @@ function bindEvents() {
 function bindFullscreenButton() {
   const button = $("fullscreenButton");
   if (!button) return;
+  const stage = document.querySelector(".stage-wrap");
+  const target = stage || document.documentElement;
+  const fullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const appFullscreen = () => document.body.classList.contains("app-fullscreen");
   const updateLabel = () => {
-    button.textContent = document.fullscreenElement ? "EXIT" : "FS";
-    button.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
+    const active = Boolean(fullscreenElement()) || appFullscreen();
+    button.textContent = active ? "EXIT" : "FS";
+    button.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+  };
+  const enterFallback = () => {
+    document.body.classList.add("app-fullscreen");
+    window.scrollTo(0, 0);
+  };
+  const exitFallback = () => {
+    document.body.classList.remove("app-fullscreen");
   };
   button.addEventListener("click", async () => {
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen();
-    } catch {}
+      if (fullscreenElement()) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) await exit.call(document);
+        exitFallback();
+      } else if (appFullscreen()) {
+        exitFallback();
+      } else {
+        const request = target.requestFullscreen || target.webkitRequestFullscreen;
+        if (request) await request.call(target);
+        else enterFallback();
+      }
+    } catch {
+      if (!fullscreenElement() && !appFullscreen()) enterFallback();
+    }
     updateLabel();
   });
   document.addEventListener("fullscreenchange", updateLabel);
+  document.addEventListener("webkitfullscreenchange", updateLabel);
   updateLabel();
 }
 

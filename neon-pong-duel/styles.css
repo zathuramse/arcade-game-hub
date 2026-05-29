@@ -342,6 +342,39 @@ canvas {
   z-index: 8;
 }
 
+body.app-fullscreen {
+  overflow: hidden;
+}
+
+body.app-fullscreen .stage-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+}
+
+.stage-wrap:fullscreen,
+.stage-wrap:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: #020607;
+}
+
+body.app-fullscreen canvas,
+.stage-wrap:fullscreen canvas,
+.stage-wrap:-webkit-full-screen canvas {
+  width: 100%;
+  height: 100%;
+}
+
 @media (max-width: 1160px) {
   .topbar,
   .layout {

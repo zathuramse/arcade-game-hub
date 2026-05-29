@@ -375,7 +375,7 @@ async function inspectHub(browser, url, hub, viewport) {
 }
 
 function pageInspectionExpression(game) {
-  return `(() => {
+  return `(async () => {
     const stage = document.querySelector(".stage-wrap");
     const canvas = document.querySelector("canvas");
     const fullscreenButton = document.querySelector("#fullscreenButton");
@@ -414,6 +414,19 @@ function pageInspectionExpression(game) {
         action.click();
       }
     }
+    let fullscreenProbe = false;
+    if (fullscreenButton) {
+      fullscreenButton.click();
+      await new Promise((resolve) => setTimeout(resolve, 80));
+      fullscreenProbe = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("app-fullscreen") || fullscreenButton.textContent.trim() === "EXIT");
+      if (document.body.classList.contains("app-fullscreen")) {
+        fullscreenButton.click();
+      } else if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen().catch(() => {});
+      } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
     let canvasNonBlank = false;
     let canvasVariance = 0;
     if (canvas) {
@@ -445,6 +458,7 @@ function pageInspectionExpression(game) {
       canvasVariance,
       missionTextLength: missionText.length,
       fullscreenExists: Boolean(fullscreenButton),
+      fullscreenProbe,
       mobileLayerDisplay: mobileLayer ? getComputedStyle(mobileLayer).display : "",
       joystickExists: Boolean(joystick),
       joystickDisplay: joystick ? getComputedStyle(joystick).display : "",
@@ -469,6 +483,7 @@ function hubInspectionExpression() {
     const shell = document.querySelector(".hub-shell");
     const player = document.querySelector(".player-panel");
     const frame = document.querySelector(".frame-wrap");
+    const iframe = document.querySelector("#gameFrame");
     const openButton = document.querySelector("#openButton");
     const cards = [...document.querySelectorAll(".game-card:not(.empty)")];
     const firstCard = cards[0];
@@ -484,6 +499,7 @@ function hubInspectionExpression() {
       shellWidth: shellRect ? shellRect.width : 0,
       viewportWidth: window.innerWidth,
       frameDisplay: frame ? getComputedStyle(frame).display : "",
+      iframeAllowsFullscreen: iframe ? (iframe.hasAttribute("allowfullscreen") && (iframe.getAttribute("allow") || "").includes("fullscreen")) : false,
       firstCardHeight: firstCardRect ? firstCardRect.height : 0,
       isNarrow: window.innerWidth <= 560,
     };
@@ -501,6 +517,7 @@ function validateInspection(value, errors) {
   if (!value.canvasNonBlank) return `canvas appears blank or too flat, variance ${value.canvasVariance}`;
   if (value.missionTextLength < 2) return "mission/status text not found";
   if (!value.fullscreenExists) return "fullscreen button not found";
+  if (!value.fullscreenProbe) return "fullscreen button did not enter native or fallback fullscreen";
   if (value.isNarrow) {
     if (value.mobileLayerDisplay === "none") return "mobile control layer is hidden on narrow screens";
     if (value.expectsJoystick && !value.joystickExists) return "mobile joystick not found";
@@ -516,6 +533,7 @@ function validateHubInspection(value, errors) {
   if (!value.shellExists) return ".hub-shell not found";
   if (!value.playerExists) return ".player-panel not found";
   if (!value.openButtonExists) return "open game action not found";
+  if (!value.iframeAllowsFullscreen) return "hub iframe does not allow fullscreen";
   if (value.gameCardCount < 4) return `expected at least 4 playable cards, found ${value.gameCardCount}`;
   if (value.shellWidth > value.viewportWidth + 2) return `hub width ${value.shellWidth}px exceeds viewport ${value.viewportWidth}px`;
   if (value.horizontalOverflow) return "horizontal overflow detected";
