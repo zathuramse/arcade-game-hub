@@ -58,6 +58,7 @@ async function main() {
     throw new Error("This QA script requires Node.js with global WebSocket support. Use Node 20+.");
   }
 
+  const options = parseArgs(process.argv.slice(2));
   const failures = [];
   for (const game of GAMES) {
     if (game.staticCheck) {
@@ -67,14 +68,15 @@ async function main() {
     }
   }
 
-  const server = await startStaticServer(ROOT);
+  const server = options.baseUrl ? null : await startStaticServer(ROOT);
+  const baseUrl = normalizeBaseUrl(options.baseUrl || server.url);
   const chrome = await startChrome();
   const client = await connectToBrowser(chrome.port);
 
   try {
     for (const game of GAMES) {
       for (const viewport of VIEWPORTS) {
-        const result = await inspectGame(client, server.url + game.path, game, viewport);
+        const result = await inspectGame(client, new URL(game.path, baseUrl).toString(), game, viewport);
         if (!result.pass) failures.push(result);
         printResult(result.pass, game.name, viewport.name, result.reason);
       }
@@ -82,7 +84,7 @@ async function main() {
   } finally {
     await client.close().catch(() => {});
     await stopProcess(chrome.process);
-    await server.close();
+    if (server) await server.close();
     await removeDir(chrome.profileDir);
   }
 
@@ -95,6 +97,27 @@ async function main() {
   }
 
   console.log("\nQA passed: all games meet the automated layout, canvas, mission, and shake checks.");
+}
+
+function parseArgs(args) {
+  const options = { baseUrl: process.env.QA_BASE_URL || "" };
+  for (const arg of args) {
+    if (arg.startsWith("--base-url=")) options.baseUrl = arg.slice("--base-url=".length);
+    else if (arg === "--production") options.baseUrl = "https://arcade-game-hub.pages.dev/";
+    else if (arg === "--help") {
+      console.log("Usage: node scripts/qa-cdp.js [--base-url=https://example.com/] [--production]");
+      process.exit(0);
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+  return options;
+}
+
+function normalizeBaseUrl(value) {
+  const url = new URL(value);
+  if (!url.pathname.endsWith("/")) url.pathname += "/";
+  return url.toString();
 }
 
 function printResult(pass, game, viewport, reason) {

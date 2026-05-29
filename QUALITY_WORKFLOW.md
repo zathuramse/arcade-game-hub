@@ -53,7 +53,19 @@
 
 ## 5. 自動化 QA 檢查點
 
-自動化 QA 使用 `node scripts/qa-cdp.js` 執行。腳本會啟動本地靜態伺服器與 headless Chrome，檢查四個遊戲在三種視窗尺寸下的狀態。
+自動化 QA 使用 `node scripts/qa-cdp.js` 執行。未指定網址時，腳本會啟動本地靜態伺服器與 headless Chrome，檢查四個遊戲在三種視窗尺寸下的狀態。
+
+Production 也必須使用同一套檢查：
+
+```text
+node scripts/qa-cdp.js --production
+```
+
+或指定任意部署網址：
+
+```text
+node scripts/qa-cdp.js --base-url=https://65c3a419.arcade-game-hub.pages.dev/
+```
 
 必須檢查的尺寸：
 
