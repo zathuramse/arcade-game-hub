@@ -1567,6 +1567,9 @@ function bindMobileJoystick() {
   const stick = $("moveStick");
   if (!stick) return;
   const thumb = stick.querySelector("span");
+  const usesRotatedStage = () =>
+    window.innerHeight > window.innerWidth &&
+    (document.body.classList.contains("app-fullscreen") || document.fullscreenElement || document.webkitFullscreenElement);
   let lastDirection = "";
   const reset = () => {
     lastDirection = "";
@@ -1578,9 +1581,11 @@ function bindMobileJoystick() {
     const radius = rect.width / 2;
     const dx = clamp((event.clientX - rect.left - radius) / radius, -1, 1);
     const dy = clamp((event.clientY - rect.top - radius) / radius, -1, 1);
-    const absX = Math.abs(dx);
-    const absY = Math.abs(dy);
-    const direction = Math.max(absX, absY) < 0.24 ? "" : absX > absY ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
+    const gameX = usesRotatedStage() ? dy : dx;
+    const gameY = usesRotatedStage() ? -dx : dy;
+    const absX = Math.abs(gameX);
+    const absY = Math.abs(gameY);
+    const direction = Math.max(absX, absY) < 0.24 ? "" : absX > absY ? (gameX > 0 ? "right" : "left") : (gameY > 0 ? "down" : "up");
     thumb.style.transform = `translate(calc(-50% + ${dx * 24}px), calc(-50% + ${dy * 24}px))`;
     if (direction && direction !== lastDirection) {
       queueDirection(direction);

@@ -2444,6 +2444,9 @@ function bindMobileJoystick() {
   const stick = document.querySelector('#moveStick')
   if (!stick) return
   const thumb = stick.querySelector('span')
+  const usesRotatedStage = () =>
+    window.innerHeight > window.innerWidth &&
+    (document.body.classList.contains('app-fullscreen') || document.fullscreenElement || document.webkitFullscreenElement)
   const reset = () => {
     input.left = false
     input.right = false
@@ -2462,10 +2465,12 @@ function bindMobileJoystick() {
     const angle = Math.atan2(dy, dx)
     const x = Math.cos(angle) * distance
     const y = Math.sin(angle) * distance
-    input.left = x < -0.25
-    input.right = x > 0.25
-    input.up = y < -0.25
-    input.down = y > 0.25
+    const gameX = usesRotatedStage() ? y : x
+    const gameY = usesRotatedStage() ? -x : y
+    input.left = gameX < -0.25
+    input.right = gameX > 0.25
+    input.up = gameY < -0.25
+    input.down = gameY > 0.25
     thumb.style.transform = `translate(calc(-50% + ${x * 24}px), calc(-50% + ${y * 24}px))`
   }
   stick.addEventListener('pointerdown', (event) => {

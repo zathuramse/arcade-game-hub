@@ -1813,6 +1813,9 @@ function bindMobileJoystick() {
   const stick = $("moveStick");
   if (!stick) return;
   const thumb = stick.querySelector("span");
+  const usesRotatedStage = () =>
+    window.innerHeight > window.innerWidth &&
+    (document.body.classList.contains("app-fullscreen") || document.fullscreenElement || document.webkitFullscreenElement);
   const reset = () => {
     state.touch.left = false;
     state.touch.right = false;
@@ -1825,9 +1828,11 @@ function bindMobileJoystick() {
     const radius = rect.width / 2;
     const dx = clamp((event.clientX - rect.left - radius) / radius, -1, 1);
     const dy = clamp((event.clientY - rect.top - radius) / radius, -1, 1);
-    state.touch.left = dx < -0.24;
-    state.touch.right = dx > 0.24;
-    state.touch.down = dy > 0.36;
+    const gameX = usesRotatedStage() ? dy : dx;
+    const gameY = usesRotatedStage() ? -dx : dy;
+    state.touch.left = gameX < -0.24;
+    state.touch.right = gameX > 0.24;
+    state.touch.down = gameY > 0.36;
     thumb.style.transform = `translate(calc(-50% + ${dx * 24}px), calc(-50% + ${dy * 24}px))`;
   };
   stick.addEventListener("pointerdown", (event) => {

@@ -81,6 +81,11 @@ async function main() {
       if (!result.pass) failures.push({ game: game.name, viewport: "static", reason: result.reason });
       printResult(result.pass, game.name, "static", result.reason);
     }
+    if (game.joystick) {
+      const result = checkRotatedJoystickMapping(game.name);
+      if (!result.pass) failures.push({ game: game.name, viewport: "static", reason: result.reason });
+      printResult(result.pass, game.name, "joystick-static", result.reason);
+    }
   }
 
   const server = options.baseUrl ? null : await startStaticServer(ROOT);
@@ -162,6 +167,21 @@ function checkSpaceBeeShake() {
     return { pass: false, reason: "draw() still uses random movement" };
   }
   return { pass: true, reason: "main camera shake is absent from draw()" };
+}
+
+function checkRotatedJoystickMapping(gameName) {
+  const file = path.join(ROOT, gameName, "game.js");
+  const source = fs.readFileSync(file, "utf8");
+  if (!/usesRotatedStage/.test(source)) {
+    return { pass: false, reason: "joystick does not detect rotated fullscreen stage" };
+  }
+  if (!/gameX\s*=\s*usesRotatedStage\(\)\s*\?\s*y\s*:\s*x/.test(source) && !/gameX\s*=\s*usesRotatedStage\(\)\s*\?\s*dy\s*:\s*dx/.test(source)) {
+    return { pass: false, reason: "joystick x-axis is not remapped after rotation" };
+  }
+  if (!/gameY\s*=\s*usesRotatedStage\(\)\s*\?\s*-x\s*:\s*y/.test(source) && !/gameY\s*=\s*usesRotatedStage\(\)\s*\?\s*-dx\s*:\s*dy/.test(source)) {
+    return { pass: false, reason: "joystick y-axis is not remapped after rotation" };
+  }
+  return { pass: true, reason: "joystick remaps screen input into rotated game coordinates" };
 }
 
 function extractFunctionBody(source, functionName) {
