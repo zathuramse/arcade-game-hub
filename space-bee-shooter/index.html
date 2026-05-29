@@ -43,6 +43,21 @@
 
       <section class="stage-wrap" aria-label="Space shooter game">
         <canvas id="game" width="1280" height="720"></canvas>
+        <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Toggle fullscreen">FS</button>
+        <div class="mobile-control-layer" aria-label="Mobile combat controls">
+          <div class="floating-joystick" id="moveStick" aria-label="Move ship">
+            <span></span>
+          </div>
+          <div class="mobile-action-pad">
+            <button data-mobile-action="fire" type="button">FIRE</button>
+            <button data-mobile-action="emp" type="button">EMP</button>
+            <button data-mobile-weapon="nuke" type="button">NUKE</button>
+            <button data-mobile-weapon="pulse" type="button">PULSE</button>
+            <button data-mobile-weapon="flame" type="button">FLAME</button>
+            <button data-mobile-weapon="laser" type="button">LASER</button>
+            <button data-mobile-weapon="freeze" type="button">ICE</button>
+          </div>
+        </div>
         <div class="overlay active" id="startOverlay">
           <div>
             <p>SPACE BEE SHOOTER</p>

@@ -2393,6 +2393,89 @@ function setButtonInput(buttonId, key) {
   button.addEventListener('pointerleave', up)
 }
 
+function bindFullscreenButton() {
+  const button = document.querySelector('#fullscreenButton')
+  if (!button) return
+  const updateLabel = () => {
+    button.textContent = document.fullscreenElement ? 'EXIT' : 'FS'
+    button.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen')
+  }
+  button.addEventListener('click', async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen()
+      else await document.documentElement.requestFullscreen()
+    } catch {}
+    updateLabel()
+  })
+  document.addEventListener('fullscreenchange', updateLabel)
+  updateLabel()
+}
+
+function bindMobileJoystick() {
+  const stick = document.querySelector('#moveStick')
+  if (!stick) return
+  const thumb = stick.querySelector('span')
+  const reset = () => {
+    input.left = false
+    input.right = false
+    input.up = false
+    input.down = false
+    thumb.style.transform = 'translate(-50%, -50%)'
+  }
+  const move = (event) => {
+    event.preventDefault()
+    initAudio()
+    const rect = stick.getBoundingClientRect()
+    const radius = rect.width / 2
+    const dx = clamp((event.clientX - rect.left - radius) / radius, -1, 1)
+    const dy = clamp((event.clientY - rect.top - radius) / radius, -1, 1)
+    const distance = Math.min(1, Math.hypot(dx, dy))
+    const angle = Math.atan2(dy, dx)
+    const x = Math.cos(angle) * distance
+    const y = Math.sin(angle) * distance
+    input.left = x < -0.25
+    input.right = x > 0.25
+    input.up = y < -0.25
+    input.down = y > 0.25
+    thumb.style.transform = `translate(calc(-50% + ${x * 24}px), calc(-50% + ${y * 24}px))`
+  }
+  stick.addEventListener('pointerdown', (event) => {
+    try {
+      stick.setPointerCapture?.(event.pointerId)
+    } catch {}
+    move(event)
+  })
+  stick.addEventListener('pointermove', (event) => {
+    if (event.buttons) move(event)
+  })
+  stick.addEventListener('pointerup', reset)
+  stick.addEventListener('pointercancel', reset)
+  stick.addEventListener('pointerleave', reset)
+}
+
+function bindMobileActions() {
+  document.querySelectorAll('[data-mobile-action], [data-mobile-weapon]').forEach((button) => {
+    const press = (event) => {
+      event.preventDefault()
+      initAudio()
+      const action = button.dataset.mobileAction
+      if (action === 'fire') {
+        input.fire = true
+        fireBullet()
+      }
+      if (action === 'emp') useSpecial()
+      if (button.dataset.mobileWeapon) useOneShot(button.dataset.mobileWeapon)
+    }
+    const release = () => {
+      if (button.dataset.mobileAction === 'fire') input.fire = false
+    }
+    button.addEventListener('pointerdown', press)
+    button.addEventListener('pointerup', release)
+    button.addEventListener('pointercancel', release)
+    button.addEventListener('pointerleave', release)
+  })
+}
+
 window.addEventListener('keydown', (event) => {
   initAudio()
   if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
@@ -2487,6 +2570,9 @@ setButtonInput('#upButton', 'up')
 setButtonInput('#rightButton', 'right')
 setButtonInput('#downButton', 'down')
 setButtonInput('#fireButton', 'fire')
+bindFullscreenButton()
+bindMobileJoystick()
+bindMobileActions()
 
 resizeCanvas()
 spawnStars()

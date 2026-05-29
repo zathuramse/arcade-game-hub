@@ -1314,6 +1314,8 @@ function bindEvents() {
   $("focusButton").addEventListener("click", () => useAbility("focus"));
   $("shieldButton").addEventListener("click", () => useAbility("shield"));
   $("serveButton").addEventListener("click", quickServe);
+  bindFullscreenButton();
+  bindMobileActions();
 
   document.querySelectorAll(".touch-zone button").forEach((button) => {
     button.addEventListener("pointerdown", () => {
@@ -1376,6 +1378,33 @@ function bindEvents() {
 
   document.addEventListener("visibilitychange", () => {
     state.lastTime = performance.now();
+  });
+}
+
+function bindFullscreenButton() {
+  const button = $("fullscreenButton");
+  if (!button) return;
+  const updateLabel = () => {
+    button.textContent = document.fullscreenElement ? "EXIT" : "FS";
+    button.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
+  };
+  button.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {}
+    updateLabel();
+  });
+  document.addEventListener("fullscreenchange", updateLabel);
+  updateLabel();
+}
+
+function bindMobileActions() {
+  document.querySelectorAll("[data-mobile-ability], [data-mobile-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.mobileAbility) useAbility(button.dataset.mobileAbility);
+      if (button.dataset.mobileAction === "serve") quickServe();
+    });
   });
 }
 

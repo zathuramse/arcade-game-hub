@@ -49,6 +49,15 @@
 
         <section class="stage-wrap" aria-label="遊戲舞台">
           <canvas id="game" width="1280" height="720"></canvas>
+          <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Toggle fullscreen">FS</button>
+          <div class="mobile-control-layer pong-actions" aria-label="Mobile pong actions">
+            <div class="mobile-action-pad">
+              <button data-mobile-ability="strike" type="button">STRIKE</button>
+              <button data-mobile-ability="focus" type="button">FOCUS</button>
+              <button data-mobile-ability="shield" type="button">SHIELD</button>
+              <button data-mobile-action="serve" type="button">SERVE</button>
+            </div>
+          </div>
           <div class="overlay active" id="startOverlay">
             <div>
               <p>ARCADE TEAM DUEL</p>

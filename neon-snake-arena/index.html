@@ -50,6 +50,18 @@
 
         <section class="stage-wrap" aria-label="遊戲舞台">
           <canvas id="game" width="1280" height="720"></canvas>
+          <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Toggle fullscreen">FS</button>
+          <div class="mobile-control-layer" aria-label="Mobile snake controls">
+            <div class="floating-joystick" id="moveStick" aria-label="Move snake">
+              <span></span>
+            </div>
+            <div class="mobile-action-pad">
+              <button data-mobile-ability="boost" type="button">BOOST</button>
+              <button data-mobile-ability="focus" type="button">FOCUS</button>
+              <button data-mobile-ability="pulse" type="button">PULSE</button>
+              <button data-mobile-ability="phase" type="button">PHASE</button>
+            </div>
+          </div>
           <div class="overlay active" id="startOverlay">
             <div>
               <p>GRIDBREACH PROTOCOL</p>

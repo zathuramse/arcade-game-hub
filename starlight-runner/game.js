@@ -1711,6 +1711,9 @@ function bindEvents() {
   $("startButton").addEventListener("click", resetGame);
   $("restartButton").addEventListener("click", resetGame);
   $("levelButton").addEventListener("click", nextLevelAction);
+  bindFullscreenButton();
+  bindMobileJoystick();
+  bindMobileActions();
 
   window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
@@ -1756,6 +1759,79 @@ function bindEvents() {
   document.addEventListener("visibilitychange", () => {
     state.lastTime = performance.now();
     state.frameAccumulator = 0;
+  });
+}
+
+function bindFullscreenButton() {
+  const button = $("fullscreenButton");
+  if (!button) return;
+  const updateLabel = () => {
+    button.textContent = document.fullscreenElement ? "EXIT" : "FS";
+    button.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
+  };
+  button.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {}
+    updateLabel();
+  });
+  document.addEventListener("fullscreenchange", updateLabel);
+  updateLabel();
+}
+
+function bindMobileJoystick() {
+  const stick = $("moveStick");
+  if (!stick) return;
+  const thumb = stick.querySelector("span");
+  const reset = () => {
+    state.touch.left = false;
+    state.touch.right = false;
+    state.touch.down = false;
+    thumb.style.transform = "translate(-50%, -50%)";
+  };
+  const move = (event) => {
+    event.preventDefault();
+    const rect = stick.getBoundingClientRect();
+    const radius = rect.width / 2;
+    const dx = clamp((event.clientX - rect.left - radius) / radius, -1, 1);
+    const dy = clamp((event.clientY - rect.top - radius) / radius, -1, 1);
+    state.touch.left = dx < -0.24;
+    state.touch.right = dx > 0.24;
+    state.touch.down = dy > 0.36;
+    thumb.style.transform = `translate(calc(-50% + ${dx * 24}px), calc(-50% + ${dy * 24}px))`;
+  };
+  stick.addEventListener("pointerdown", (event) => {
+    try {
+      stick.setPointerCapture?.(event.pointerId);
+    } catch {}
+    move(event);
+  });
+  stick.addEventListener("pointermove", (event) => {
+    if (event.buttons) move(event);
+  });
+  stick.addEventListener("pointerup", reset);
+  stick.addEventListener("pointercancel", reset);
+  stick.addEventListener("pointerleave", reset);
+}
+
+function bindMobileActions() {
+  document.querySelectorAll("[data-mobile-action], [data-mobile-hold]").forEach((button) => {
+    const hold = button.dataset.mobileHold;
+    const action = button.dataset.mobileAction;
+    const press = (event) => {
+      event.preventDefault();
+      if (hold) state.touch[hold] = true;
+      if (action === "jump") queueJump();
+      if (action === "fire") shootFireball();
+    };
+    const release = () => {
+      if (hold) state.touch[hold] = false;
+    };
+    button.addEventListener("pointerdown", press);
+    button.addEventListener("pointerup", release);
+    button.addEventListener("pointercancel", release);
+    button.addEventListener("pointerleave", release);
   });
 }
 

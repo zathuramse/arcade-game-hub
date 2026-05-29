@@ -1460,6 +1460,9 @@ function bindEvents() {
   document.querySelectorAll(".touch-pad button").forEach((button) => {
     button.addEventListener("click", () => queueDirection(button.dataset.dir));
   });
+  bindFullscreenButton();
+  bindMobileJoystick();
+  bindMobileActions();
 
   window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
@@ -1510,6 +1513,68 @@ function bindEvents() {
 
   document.addEventListener("visibilitychange", () => {
     state.lastTime = performance.now();
+  });
+}
+
+function bindFullscreenButton() {
+  const button = $("fullscreenButton");
+  if (!button) return;
+  const updateLabel = () => {
+    button.textContent = document.fullscreenElement ? "EXIT" : "FS";
+    button.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
+  };
+  button.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {}
+    updateLabel();
+  });
+  document.addEventListener("fullscreenchange", updateLabel);
+  updateLabel();
+}
+
+function bindMobileJoystick() {
+  const stick = $("moveStick");
+  if (!stick) return;
+  const thumb = stick.querySelector("span");
+  let lastDirection = "";
+  const reset = () => {
+    lastDirection = "";
+    thumb.style.transform = "translate(-50%, -50%)";
+  };
+  const move = (event) => {
+    event.preventDefault();
+    const rect = stick.getBoundingClientRect();
+    const radius = rect.width / 2;
+    const dx = clamp((event.clientX - rect.left - radius) / radius, -1, 1);
+    const dy = clamp((event.clientY - rect.top - radius) / radius, -1, 1);
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    const direction = Math.max(absX, absY) < 0.24 ? "" : absX > absY ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
+    thumb.style.transform = `translate(calc(-50% + ${dx * 24}px), calc(-50% + ${dy * 24}px))`;
+    if (direction && direction !== lastDirection) {
+      queueDirection(direction);
+      lastDirection = direction;
+    }
+  };
+  stick.addEventListener("pointerdown", (event) => {
+    try {
+      stick.setPointerCapture?.(event.pointerId);
+    } catch {}
+    move(event);
+  });
+  stick.addEventListener("pointermove", (event) => {
+    if (event.buttons) move(event);
+  });
+  stick.addEventListener("pointerup", reset);
+  stick.addEventListener("pointercancel", reset);
+  stick.addEventListener("pointerleave", reset);
+}
+
+function bindMobileActions() {
+  document.querySelectorAll("[data-mobile-ability]").forEach((button) => {
+    button.addEventListener("click", () => useAbility(button.dataset.mobileAbility));
   });
 }
 

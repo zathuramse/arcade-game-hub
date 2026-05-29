@@ -13,22 +13,30 @@ const GAMES = [
     name: "space-bee-shooter",
     path: "/space-bee-shooter/",
     missionSelectors: ["#missionLabel", "#missionProgress", "#storyTitle"],
+    joystick: true,
+    minMobileActions: 6,
     staticCheck: checkSpaceBeeShake,
   },
   {
     name: "neon-snake-arena",
     path: "/neon-snake-arena/",
     missionSelectors: ["#missionTitle", "#missionText"],
+    joystick: true,
+    minMobileActions: 4,
   },
   {
     name: "neon-pong-duel",
     path: "/neon-pong-duel/",
     missionSelectors: ["#playerStatus", "#playerText"],
+    joystick: false,
+    minMobileActions: 4,
   },
   {
     name: "starlight-runner",
     path: "/starlight-runner/",
     missionSelectors: ["#missionTitle", "#missionText"],
+    joystick: true,
+    minMobileActions: 3,
   },
 ];
 
@@ -110,7 +118,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log("\nQA passed: all game and collection targets meet the automated layout, canvas, mission, mobile, and shake checks.");
+  console.log("\nQA passed: all game and collection targets meet the automated layout, canvas, mission, mobile controls, fullscreen, and shake checks.");
 }
 
 function parseArgs(args) {
@@ -302,7 +310,7 @@ async function inspectGame(browser, url, game, viewport) {
     await waitForPageLoad(browser, sessionId);
     await sleep(1000);
 
-    const expression = pageInspectionExpression(game.missionSelectors);
+    const expression = pageInspectionExpression(game);
     const evaluation = await browser.send("Runtime.evaluate", {
       expression,
       returnByValue: true,
@@ -366,20 +374,46 @@ async function inspectHub(browser, url, hub, viewport) {
   }
 }
 
-function pageInspectionExpression(missionSelectors) {
+function pageInspectionExpression(game) {
   return `(() => {
     const stage = document.querySelector(".stage-wrap");
     const canvas = document.querySelector("canvas");
+    const fullscreenButton = document.querySelector("#fullscreenButton");
+    const mobileLayer = document.querySelector(".mobile-control-layer");
+    const joystick = document.querySelector("#moveStick");
+    const mobileActions = [...document.querySelectorAll(".mobile-action-pad button")];
     const doc = document.documentElement;
     const body = document.body;
     const stageRect = stage ? stage.getBoundingClientRect() : null;
     const canvasRect = canvas ? canvas.getBoundingClientRect() : null;
-    const missionSelectors = ${JSON.stringify(missionSelectors)};
+    const missionSelectors = ${JSON.stringify(game.missionSelectors)};
     const missionText = missionSelectors
       .map((selector) => document.querySelector(selector)?.textContent?.trim() || "")
       .filter(Boolean)
       .join(" ");
     const horizontalOverflow = Math.max(doc.scrollWidth, body.scrollWidth) > window.innerWidth + 2;
+    let mobileControlProbe = false;
+    if (window.innerWidth <= 560 && mobileLayer) {
+      const target = joystick || mobileActions[0];
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const x = rect.left + rect.width * 0.7;
+        const y = rect.top + rect.height * 0.5;
+        target.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 9, buttons: 1, clientX: x, clientY: y }));
+        target.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, cancelable: true, pointerId: 9, buttons: 1, clientX: x + 8, clientY: y }));
+        target.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 9, buttons: 0, clientX: x + 8, clientY: y }));
+        mobileControlProbe = true;
+      }
+      const action = mobileActions[0];
+      if (action) {
+        const rect = action.getBoundingClientRect();
+        const x = rect.left + rect.width * 0.5;
+        const y = rect.top + rect.height * 0.5;
+        action.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 10, buttons: 1, clientX: x, clientY: y }));
+        action.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 10, buttons: 0, clientX: x, clientY: y }));
+        action.click();
+      }
+    }
     let canvasNonBlank = false;
     let canvasVariance = 0;
     if (canvas) {
@@ -410,6 +444,20 @@ function pageInspectionExpression(missionSelectors) {
       canvasNonBlank,
       canvasVariance,
       missionTextLength: missionText.length,
+      fullscreenExists: Boolean(fullscreenButton),
+      mobileLayerDisplay: mobileLayer ? getComputedStyle(mobileLayer).display : "",
+      joystickExists: Boolean(joystick),
+      joystickDisplay: joystick ? getComputedStyle(joystick).display : "",
+      mobileActionCount: mobileActions.length,
+      mobileControlProbe,
+      visibleMobileActionCount: mobileActions.filter((button) => {
+        const style = getComputedStyle(button);
+        const rect = button.getBoundingClientRect();
+        return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      }).length,
+      expectsJoystick: ${Boolean(game.joystick)},
+      minMobileActions: ${game.minMobileActions || 0},
+      isNarrow: window.innerWidth <= 560,
     };
   })()`;
 }
@@ -452,6 +500,14 @@ function validateInspection(value, errors) {
   if (value.horizontalOverflow) return "horizontal overflow detected";
   if (!value.canvasNonBlank) return `canvas appears blank or too flat, variance ${value.canvasVariance}`;
   if (value.missionTextLength < 2) return "mission/status text not found";
+  if (!value.fullscreenExists) return "fullscreen button not found";
+  if (value.isNarrow) {
+    if (value.mobileLayerDisplay === "none") return "mobile control layer is hidden on narrow screens";
+    if (value.expectsJoystick && !value.joystickExists) return "mobile joystick not found";
+    if (value.expectsJoystick && value.joystickDisplay === "none") return "mobile joystick is hidden";
+    if (value.visibleMobileActionCount < value.minMobileActions) return `expected ${value.minMobileActions} visible mobile actions, found ${value.visibleMobileActionCount}`;
+    if (!value.mobileControlProbe) return "mobile control event probe did not run";
+  }
   return "";
 }
 

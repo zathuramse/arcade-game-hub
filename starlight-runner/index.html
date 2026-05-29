@@ -30,6 +30,17 @@
 
       <section class="stage-wrap" aria-label="橫向卷軸遊戲">
         <canvas id="game" width="1280" height="720"></canvas>
+        <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Toggle fullscreen">FS</button>
+        <div class="mobile-control-layer" aria-label="Mobile runner controls">
+          <div class="floating-joystick" id="moveStick" aria-label="Move runner">
+            <span></span>
+          </div>
+          <div class="mobile-action-pad">
+            <button data-mobile-action="jump" type="button">JUMP</button>
+            <button data-mobile-action="fire" type="button">FIRE</button>
+            <button data-mobile-hold="dash" type="button">DASH</button>
+          </div>
+        </div>
         <div class="overlay active" id="startOverlay">
           <div>
             <p>STARLIGHT RUNNER</p>

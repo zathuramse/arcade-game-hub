@@ -15,6 +15,7 @@
 7. 每個遊戲至少可連續遊玩 3 分鐘，不出現卡死、重大掉幀、輸入失效。
 8. GitHub 最新 commit 與 Cloudflare production 部署來源一致。
 9. 100 個版本迭代必須有可追蹤紀錄與驗收結果，不能只做描述性流水帳。
+10. 手機版必須提供適合觸控的操作：Space Bee Shooter、Neon Snake Arena、Starlight Runner 使用浮動方向搖桿，四個遊戲都要有浮動快捷鍵與全螢幕切換。
 
 ## 2. 硬性禁止項目
 
@@ -86,6 +87,9 @@ node scripts/qa-cdp.js --base-url=https://65c3a419.arcade-game-hub.pages.dev/
 7. canvas 不是空白畫面。
 8. 任務或狀態文字存在。
 9. console 沒有 error。
+10. 四個遊戲都存在全螢幕切換按鈕。
+11. 手機窄螢幕下，應顯示浮動控制層與快捷鍵。
+12. Space Bee Shooter、Neon Snake Arena、Starlight Runner 手機窄螢幕下必須顯示浮動方向搖桿。
 
 集合頁也必須通過：
 
