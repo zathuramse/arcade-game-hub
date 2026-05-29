@@ -110,6 +110,7 @@ const state = {
   cooldowns: { boost: 0, focus: 0, pulse: 0, phase: 0 },
   boss: null,
   deaths: 0,
+  bonusMission: { type: "combo", progress: 0, target: 6, complete: false },
   audio: {
     ctx: null,
     master: null,
@@ -220,6 +221,7 @@ function resetGame() {
   state.cooldowns = { boost: 0, focus: 0, pulse: 0, phase: 0 };
   state.boss = null;
   state.deaths = 0;
+  state.bonusMission = { type: "combo", progress: 0, target: 6, complete: false };
   state.snake = [];
   const startX = Math.floor(COLS / 2) - 3;
   const startY = Math.floor(ROWS / 2);
@@ -299,6 +301,7 @@ function spawnPowerup(forceType = null) {
 function createSector() {
   state.collected = 0;
   state.target = 7 + Math.min(11, state.sector);
+  setupBonusMission();
   state.tickMs = Math.max(74, 138 - state.sector * 5 - state.upgrades.engine * 3);
   state.hazards = [];
   state.gates = [];
@@ -717,6 +720,7 @@ function consumeFood(cell) {
   state.combo += 1;
   state.comboTimer = 4.8;
   state.collected += 1;
+  advanceBonusMission("combo", state.combo);
   state.grow += 1 + Math.floor(state.combo / 7);
   addParticle(c.x, c.y, colors.cyan, 24, 260, 4);
   addFloater(`+${points}`, c.x, c.y, colors.cyan);
@@ -772,6 +776,7 @@ function consumePowerup(powerup, cell) {
     },
   };
   map[powerup.type]?.();
+  advanceBonusMission("powerup", 1);
   addParticle(c.x, c.y, powerupColor(powerup.type), 20, 220, 4);
   addShockwave(c.x, c.y, powerupColor(powerup.type), 130);
   playSfx("powerup");
@@ -812,6 +817,44 @@ function clearSector() {
   addShockwave(W / 2, H / 2, colors.cyan, 420);
   playSfx("sector");
   updateUi();
+}
+
+function setupBonusMission() {
+  const type = state.sector % 2 === 0 ? "powerup" : "combo";
+  state.bonusMission = {
+    type,
+    progress: 0,
+    target: type === "powerup" ? 2 + Math.min(2, Math.floor(state.sector / 4)) : 6 + Math.min(4, Math.floor(state.sector / 3)),
+    complete: false,
+  };
+}
+
+function advanceBonusMission(type, amount = 1) {
+  const mission = state.bonusMission;
+  if (mission.complete || mission.type !== type) return;
+  mission.progress = type === "combo" ? Math.max(mission.progress, amount) : mission.progress + amount;
+  if (mission.progress >= mission.target) {
+    mission.progress = mission.target;
+    mission.complete = true;
+    state.score += 450 + state.sector * 60;
+    if (type === "combo") {
+      state.crystals += 8 + Math.floor(state.sector / 2);
+      state.shield = Math.min(3 + state.upgrades.shield, state.shield + 1);
+    } else {
+      state.crystals += 6 + state.sector;
+      state.phaseTime = Math.max(state.phaseTime, 3.5);
+    }
+    addFloater("小任務完成", W / 2, 98, colors.yellow);
+    addShockwave(W / 2, H / 2, colors.yellow, 280);
+    playSfx("combo");
+  }
+}
+
+function bonusMissionText() {
+  const mission = state.bonusMission;
+  const label = mission.type === "combo" ? "連擊試煉" : "能力回收";
+  const reward = mission.type === "combo" ? "結晶與護盾" : "結晶與相位";
+  return `${label} ${mission.progress}/${mission.target}${mission.complete ? " 完成" : ""}，獎勵 ${reward}`;
 }
 
 function nextSector() {
@@ -987,7 +1030,7 @@ function updateUi() {
   ui.combo.textContent = state.combo.toString();
   ui.shield.textContent = state.shield.toString();
   ui.missionTitle.textContent = state.boss ? "擊破守門者並收集核心" : "收集資料核心";
-  ui.missionText.textContent = `進度 ${state.collected}/${state.target}，連擊時間 ${Math.ceil(state.comboTimer)} 秒。`;
+  ui.missionText.textContent = `核心 ${state.collected}/${state.target}，${bonusMissionText()}。`;
   ui.missionMeter.style.width = `${clamp((state.collected / state.target) * 100, 0, 100)}%`;
   ui.statusLabel.textContent = state.starTime > 0 ? "STAR" : state.phaseTime > 0 ? "相位中" : state.slowMo > 0 ? "專注中" : state.boostTime > 0 ? "加速中" : "穩定";
   ui.statusText.textContent = state.phaseTime > 0

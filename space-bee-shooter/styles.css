@@ -91,7 +91,7 @@ button:focus-visible {
 
 .stage-wrap {
   position: relative;
-  width: min(100%, calc((100vh - 250px) * 1.777777));
+  width: min(100%, calc((100dvh - 250px) * 1.777777));
   aspect-ratio: 16 / 9;
   justify-self: center;
   min-height: 0;
@@ -417,7 +417,7 @@ canvas {
   }
 
   .stage-wrap {
-    width: min(100%, calc((100vh - 230px) * 1.777777));
+    width: min(100%, calc((100dvh - 230px) * 1.777777));
   }
 
   .upgrade-panel {

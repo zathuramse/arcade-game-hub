@@ -97,6 +97,12 @@ const powerups = {
   shield: { label: "護盾", color: colors.orange },
 };
 
+const missionDefs = [
+  { type: "rally", label: "穩住長回合", target: 5, reward: "獎勵：球門護盾 +1" },
+  { type: "powerup", label: "搶下中央道具", target: 2, reward: "獎勵：Focus 重置並擴拍 8 秒" },
+  { type: "strikeScore", label: "強打直接得分", target: 1, reward: "獎勵：勝分門檻 -1，護盾 +1" },
+];
+
 const state = {
   mode: "start",
   playerScore: 0,
@@ -134,6 +140,8 @@ const state = {
   arenaPulse: 0,
   rallyDrama: false,
   matchAction: "restart",
+  strikePointActive: false,
+  mission: { progress: 0, complete: false },
   lastTime: 0,
   audio: {
     ctx: null,
@@ -192,6 +200,7 @@ function resetMatch(full = true) {
     state.leagueIndex = 0;
   }
   state.mode = "playing";
+  state.targetScore = 7;
   state.player = createPaddle("player");
   state.cpu = createPaddle("cpu");
   state.balls = [];
@@ -214,6 +223,8 @@ function resetMatch(full = true) {
   state.slowMo = 0;
   state.flash = 0.35;
   state.screenShake = 0;
+  state.strikePointActive = false;
+  state.mission = { progress: 0, complete: false };
   buildDrones();
   hideOverlays();
   serve("player");
@@ -226,6 +237,7 @@ function resetPoint(scoringSide) {
   state.powerItems = [];
   state.gravityWell = null;
   state.pendingStrike = 0;
+  state.strikePointActive = false;
   state.playerShield = Math.max(0, state.playerShield - 1);
   state.cpuShield = Math.max(0, state.cpuShield - 1);
   state.serveSide = scoringSide === "player" ? "cpu" : "player";
@@ -347,6 +359,39 @@ function useAbility(name) {
     addShockwave(40, state.player.y, colors.orange, 160);
   }
   updateUi();
+}
+
+function currentMission() {
+  return missionDefs[state.leagueIndex] || missionDefs[0];
+}
+
+function advanceMission(type, amount = 1) {
+  const mission = currentMission();
+  if (state.mission.complete || mission.type !== type) return;
+  state.mission.progress = mission.type === "rally"
+    ? Math.max(state.mission.progress, amount)
+    : state.mission.progress + amount;
+  if (state.mission.progress >= mission.target) {
+    state.mission.progress = mission.target;
+    state.mission.complete = true;
+    applyMissionReward(mission);
+  }
+  updateUi();
+}
+
+function applyMissionReward(mission) {
+  if (mission.type === "rally") {
+    state.playerShield = Math.min(3, state.playerShield + 1);
+  } else if (mission.type === "powerup") {
+    state.cooldowns.focus = 0;
+    state.playerExpand = Math.max(state.playerExpand, 8);
+  } else if (mission.type === "strikeScore") {
+    state.targetScore = Math.max(5, state.targetScore - 1);
+    state.playerShield = Math.min(3, state.playerShield + 1);
+  }
+  addFloater("MISSION REWARD", state.player.x + 90, state.player.y - 82, colors.yellow);
+  addShockwave(state.player.x + 40, state.player.y, colors.yellow, 210);
+  playSfx("powerup");
 }
 
 function update(dt) {
@@ -574,6 +619,8 @@ function hitPaddle(ball, paddle, dir) {
   ball.owner = side;
   ball.hot = strike ? 1.2 : 0.35;
   state.rally += 1;
+  if (side === "player") advanceMission("rally", state.rally);
+  if (side === "cpu") state.strikePointActive = false;
   if (state.rally >= 10 && !state.rallyDrama) triggerRallyDrama(ball);
   paddle.hitFlash = 1;
   const color = side === "player" ? colors.cyan : opponents[state.leagueIndex].color;
@@ -581,6 +628,7 @@ function hitPaddle(ball, paddle, dir) {
   addShockwave(ball.x, ball.y, strike ? colors.yellow : color, strike ? 190 : 105);
   if (strike) {
     state.pendingStrike = 0;
+    state.strikePointActive = true;
     state.screenShake = 9;
     addFloater("POWER SHOT", ball.x + 35, ball.y - 25, colors.yellow);
     playSfx("powerHit");
@@ -642,6 +690,7 @@ function scorePoint(side) {
   state.gravityWell = null;
   if (side === "player") state.playerScore += 1;
   else state.cpuScore += 1;
+  if (side === "player" && state.strikePointActive) advanceMission("strikeScore", 1);
   const x = side === "player" ? W - 65 : 65;
   addShockwave(x, H / 2, side === "player" ? colors.cyan : colors.red, 320);
   addParticle(x, H / 2, side === "player" ? colors.cyan : colors.red, 70, 360, 5);
@@ -729,6 +778,7 @@ function collectPowerups(ball) {
       state.powerItems.splice(i, 1);
       const side = ball.lastHit === "cpu" ? "cpu" : "player";
       applyPowerup(item.type, side, item.x, item.y);
+      if (side === "player") advanceMission("powerup", 1);
     }
   }
 }
@@ -920,8 +970,9 @@ function updateUi() {
   ui.league.textContent = `${state.leagueIndex + 1}/${opponents.length}`;
   ui.ballSpeed.textContent = Math.round(fastest).toString();
   ui.streak.textContent = state.winStreak.toString();
-  ui.playerStatus.textContent = state.playerShield > 0 ? "護盾在線" : state.pendingStrike > 0 ? "強打蓄能" : state.slowMo > 0 ? "專注中" : "穩定";
-  ui.playerText.textContent = state.pendingStrike > 0 ? "下一次擊球會大幅加速並增加旋轉。" : "W/S、方向鍵、滑鼠或觸控拖曳移動球拍；B 暫停。";
+  const mission = currentMission();
+  ui.playerStatus.textContent = state.mission.complete ? `${mission.label} 完成` : mission.label;
+  ui.playerText.textContent = `進度 ${state.mission.progress}/${mission.target}｜${mission.reward}`;
   ui.abilityStatus.textContent = `${readyCount()} 招可用`;
   ui.abilityText.textContent = `Z Strike ${formatCooldown(state.cooldowns.strike)}｜X Focus ${formatCooldown(state.cooldowns.focus)}｜C Shield ${formatCooldown(state.cooldowns.shield)}｜V Serve｜B Pause`;
   ui.powerStatus.textContent = state.powerItems.length ? state.powerItems.map((p) => powerups[p.type].label).join("、") : "準備中";

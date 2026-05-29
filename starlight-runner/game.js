@@ -73,6 +73,8 @@ const state = {
   checkpoint: null,
   levelAction: "next",
   secretReturn: null,
+  levelCoins: 0,
+  levelDefeats: 0,
   lastTime: 0,
   audio: {
     ctx: null,
@@ -400,6 +402,8 @@ function loadLevel(index) {
   state.particles = [];
   state.floaters = [];
   state.rings = [];
+  state.levelCoins = 0;
+  state.levelDefeats = 0;
   state.flash = 0.28;
   updateUi();
 }
@@ -595,6 +599,7 @@ function updateFireballs(dt) {
       enemy.alive = false;
       enemy.squash = 0.35;
       ball.life = 0;
+      state.levelDefeats += 1;
       state.score += 180;
       addFloater("+180", enemy.x + enemy.w / 2, enemy.y, colors.coral);
       addParticle(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, colors.coral, 18, 230, 3);
@@ -658,6 +663,7 @@ function releaseBlockContents(block) {
   if (content === "coin") {
     state.score += 100;
     state.coins += 1;
+    state.levelCoins += 1;
     addFloater("+100", block.x + block.w / 2, block.y - 12, colors.yellow);
     addParticle(block.x + block.w / 2, block.y, colors.yellow, 16, 170, 3);
     playSfx("coin");
@@ -757,6 +763,7 @@ function collectCoins() {
     if (coin.taken || !rectsOverlap(p, coin)) return;
     coin.taken = true;
     state.coins += 1;
+    state.levelCoins += 1;
     state.score += 120;
     addFloater("+120", coin.x + coin.w / 2, coin.y, colors.yellow);
     addParticle(coin.x + coin.w / 2, coin.y + coin.h / 2, colors.yellow, 16, 180, 3);
@@ -835,6 +842,7 @@ function checkEnemyHits() {
     if (p.starTime > 0) {
       enemy.alive = false;
       enemy.squash = 0.28;
+      state.levelDefeats += 1;
       state.score += 250;
       addFloater("+250", enemy.x + enemy.w / 2, enemy.y, colors.yellow);
       addParticle(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, colors.yellow, 24, 260, 4);
@@ -846,6 +854,7 @@ function checkEnemyHits() {
     if (stomp) {
       enemy.alive = false;
       enemy.squash = 0.35;
+      state.levelDefeats += 1;
       p.vy = p.power === "boots" ? -620 : -520;
       state.score += 200;
       addFloater("+200", enemy.x + enemy.w / 2, enemy.y, colors.yellow);
@@ -977,13 +986,17 @@ function finishLevel() {
   if (state.mode !== "playing") return;
   state.mode = "levelClear";
   const timeBonus = Math.round(state.timer) * 8;
-  state.score += timeBonus + 1200;
+  const mission = levelMission();
+  const missionComplete = mission.done();
+  const missionBonus = missionComplete ? mission.score : 0;
+  state.score += timeBonus + 1200 + missionBonus;
+  if (missionComplete) mission.reward();
   state.levelAction = state.levelIndex === 2 ? "return" : state.levelIndex < 1 ? "next" : "restart";
   ui.levelOverlay.classList.add("active");
   ui.levelLabel.textContent = state.levelIndex === 2 ? "SECRET CLEAR" : state.levelIndex < 1 ? "COURSE CLEAR" : "ADVENTURE CLEAR";
   ui.levelTitle.textContent = state.levelIndex < 1 ? "關卡突破" : "星塵群島通關";
   if (state.levelIndex === 2) ui.levelTitle.textContent = "秘密通道完成";
-  ui.levelText.textContent = `時間獎勵 ${timeBonus}，目前分數 ${state.score.toLocaleString()}。`;
+  ui.levelText.textContent = `時間獎勵 ${timeBonus}，${mission.title}：${missionComplete ? `完成 +${missionBonus}` : "未完成"}，目前分數 ${state.score.toLocaleString()}。`;
   ui.levelButton.textContent = state.levelIndex < 1 ? "進入 1-2" : "重新挑戰";
   if (state.levelIndex === 2) ui.levelButton.textContent = "回到主線";
   state.flash = 0.42;
@@ -1048,12 +1061,9 @@ function updateUi() {
   ui.timer.textContent = Math.ceil(state.timer).toString();
   ui.power.textContent = powerLabel(state.player?.power || "none");
   ui.checkpointStatus.textContent = state.world?.checkpoint.lit ? "已啟動" : "尚未啟動";
-  ui.missionTitle.textContent = state.levelIndex === 0 ? "抵達終點門" : "突破星霧高塔";
-  ui.missionText.textContent = state.player?.power === "boots"
-    ? "跳靴啟動中，可以跳得更高。"
-    : state.player?.power === "spark"
-      ? "火花啟動中，頂磚可破壞普通星磚。"
-      : "善用跳躍緩衝、土狼時間與衝刺通過缺口。";
+  const mission = levelMission();
+  ui.missionTitle.textContent = mission.title;
+  ui.missionText.textContent = `${mission.text}｜進度 ${mission.progress()}｜獎勵 ${mission.rewardText}`;
   window.__runnerDiagnostics = {
     mode: state.mode,
     levelIndex: state.levelIndex,
@@ -1062,6 +1072,50 @@ function updateUi() {
     lives: state.lives,
     playerX: Math.round(state.player?.x || 0),
     cameraX: Math.round(state.camera.x),
+  };
+}
+
+function levelMission() {
+  if (state.levelIndex === 0) {
+    return {
+      title: "收集 12 枚星幣",
+      text: "抵達終點前多走高低平台路線。",
+      rewardText: "1UP + 600 分",
+      score: 600,
+      progress: () => `${Math.min(state.levelCoins, 12)}/12`,
+      done: () => state.levelCoins >= 12,
+      reward: () => { state.lives += 1; },
+    };
+  }
+  if (state.levelIndex === 1) {
+    return {
+      title: "擊倒 5 名敵人",
+      text: "用踩踏、無敵星或火球清出安全路線。",
+      rewardText: "火焰能力 + 900 分",
+      score: 900,
+      progress: () => `${Math.min(state.levelDefeats, 5)}/5`,
+      done: () => state.levelDefeats >= 5,
+      reward: () => {
+        if (state.player) {
+          state.player.power = "fire";
+          state.player.powerTime = 16;
+        }
+      },
+    };
+  }
+  return {
+    title: "秘密通道全收集",
+    text: "在限時內拿滿 5 枚通道星幣。",
+    rewardText: "護盾菇 + 700 分",
+    score: 700,
+    progress: () => `${Math.min(state.levelCoins, 5)}/5`,
+    done: () => state.levelCoins >= 5,
+    reward: () => {
+      if (state.player) {
+        state.player.power = "mushroom";
+        state.player.powerTime = Math.max(state.player.powerTime, 10);
+      }
+    },
   };
 }
 

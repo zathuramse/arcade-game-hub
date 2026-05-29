@@ -1,0 +1,104 @@
+# Version 100 Upgrade Log
+
+This batch turns the arcade collection into a consistent 16:9 viewport-aligned release and adds stronger mission/reward loops across the four games.
+
+- v001: Standardized all game stages around a 16:9 display contract.
+- v002: Removed fixed canvas minimum heights that could crop the active playfield.
+- v003: Added viewport-height constrained stage widths for desktop layouts.
+- v004: Added mobile stage fallback to full available width.
+- v005: Preserved visual overlays inside the stage instead of letting them resize the canvas.
+- v006: Kept canvas CSS width and height locked to the stage bounds.
+- v007: Updated Snake canvas from 1080x720 to 1280x720.
+- v008: Updated Space Bee canvas from 960x620 to 1280x720.
+- v009: Updated Space Bee world coordinates to 1280x720.
+- v010: Kept Pong at native 1280x720.
+- v011: Kept Starlight Runner at native 1280x720.
+- v012: Switched Starlight viewport math to dynamic viewport height.
+- v013: Switched Space Bee viewport math to dynamic viewport height.
+- v014: Added dynamic viewport sizing to Snake desktop stage.
+- v015: Added dynamic viewport sizing to Pong desktop stage.
+- v016: Added tablet viewport sizing to Snake stage.
+- v017: Added tablet viewport sizing to Pong stage.
+- v018: Removed Snake canvas tablet min-height.
+- v019: Removed Pong canvas tablet min-height.
+- v020: Removed Snake canvas mobile min-height.
+- v021: Removed Pong canvas mobile min-height.
+- v022: Preserved no-crop stage overflow behavior.
+- v023: Kept HUD outside the stage so the 16:9 playfield remains stable.
+- v024: Reduced layout shift when overlays appear.
+- v025: Aligned canvas aspect behavior across all game folders.
+- v026: Identified Space Bee surprise shake as the main extreme jitter source.
+- v027: Replaced the surprise shake spike with a controlled shake value.
+- v028: Added a draw-time shake amplitude clamp in Space Bee.
+- v029: Kept normal hit feedback visible without violent displacement.
+- v030: Preserved nuke and shield feedback while preventing excessive jitter.
+- v031: Kept meteor impacts readable with bounded shake.
+- v032: Reduced long-duration surprise shake side effects.
+- v033: Kept Space Bee screen flash separate from camera shake.
+- v034: Rebalanced Space Bee stage presentation for wider 16:9 play.
+- v035: Preserved Space Bee projectile and enemy bounds against the larger world.
+- v036: Preserved Space Bee player movement bounds against the larger world.
+- v037: Preserved Space Bee mission placement against the larger world.
+- v038: Preserved Space Bee boss bar centering against the larger world.
+- v039: Preserved Space Bee powerup spawning against the larger world.
+- v040: Preserved Space Bee background drawing against the larger world.
+- v041: Added Pong per-opponent mission definitions.
+- v042: Added Pong mission state.
+- v043: Added Pong long-rally mission progress.
+- v044: Added Pong central-powerup mission progress.
+- v045: Added Pong strike-score mission progress.
+- v046: Added Pong mission completion detection.
+- v047: Added Pong rally mission reward.
+- v048: Added Pong powerup mission reward.
+- v049: Added Pong strike-score mission reward.
+- v050: Added Pong mission reward float text.
+- v051: Added Pong mission reward shockwave.
+- v052: Added Pong mission reward sound feedback.
+- v053: Added Pong current mission UI copy.
+- v054: Added Pong mission progress UI.
+- v055: Added Pong mission reward UI.
+- v056: Reset Pong missions per opponent.
+- v057: Reset Pong target score per opponent.
+- v058: Reduced Pong score target only as an earned reward.
+- v059: Cleared Pong strike mission state between points.
+- v060: Cleared Pong strike mission state after CPU returns.
+- v061: Added Starlight per-level mission tracking.
+- v062: Added Starlight per-level coin counter.
+- v063: Added Starlight per-level enemy defeat counter.
+- v064: Added Starlight level 1 coin mission.
+- v065: Added Starlight level 2 enemy mission.
+- v066: Added Starlight secret route collection mission.
+- v067: Added Starlight mission score rewards.
+- v068: Added Starlight 1UP mission reward.
+- v069: Added Starlight fire-power mission reward.
+- v070: Added Starlight mushroom shield reward.
+- v071: Added Starlight mission result text on clear overlay.
+- v072: Added Starlight mission progress text in the info panel.
+- v073: Added Starlight reward text in the info panel.
+- v074: Counted Starlight block coins toward mission progress.
+- v075: Counted Starlight stage coins toward mission progress.
+- v076: Counted Starlight fireball defeats toward mission progress.
+- v077: Counted Starlight star defeats toward mission progress.
+- v078: Counted Starlight stomp defeats toward mission progress.
+- v079: Reset Starlight mission counters on level load.
+- v080: Preserved Starlight core movement and camera behavior.
+- v081: Added Snake rotating bonus mission state.
+- v082: Added Snake combo-trial bonus mission.
+- v083: Added Snake powerup-recovery bonus mission.
+- v084: Added Snake bonus mission setup per sector.
+- v085: Added Snake combo mission progress.
+- v086: Added Snake powerup mission progress.
+- v087: Added Snake bonus mission completion detection.
+- v088: Added Snake combo reward crystals.
+- v089: Added Snake combo reward shield.
+- v090: Added Snake powerup reward crystals.
+- v091: Added Snake powerup reward phase time.
+- v092: Added Snake bonus mission float text.
+- v093: Added Snake bonus mission shockwave.
+- v094: Added Snake mission panel bonus text.
+- v095: Preserved Snake main core collection objective.
+- v096: Preserved Snake sector clear upgrade flow.
+- v097: Preserved Space Bee existing mission reward system.
+- v098: Preserved Space Bee relic, overdrive, arsenal, and wave rewards.
+- v099: Prepared the collection for browser QA across desktop and mobile.
+- v100: Prepared the collection for GitHub and Cloudflare redeploy after verification.

@@ -34,7 +34,7 @@ const oneShotButtons = {
   freeze: document.querySelector('[data-weapon="freeze"]'),
 }
 
-const world = { width: 960, height: 620 }
+const world = { width: 1280, height: 720 }
 const input = { left: false, right: false, up: false, down: false, fire: false }
 const upgradeOrder = ['weapon', 'engine', 'hull', 'shield', 'drone']
 const upgradeHotkeys = {
@@ -1642,7 +1642,7 @@ function update(dt) {
 function triggerWaveSurprise() {
   state.surpriseTriggered = true
   state.screenFlash = 0.42
-  state.screenShake = 7
+  state.screenShake = 0.42
   const reward = state.wave % 5 === 0 ? 'starcore' : state.wave % 3 === 0 ? 'overdrive' : 'credits'
   spawnPowerup(reward)
   if (state.wave >= 4) {
@@ -2340,7 +2340,10 @@ function drawScreenFlash() {
 
 function draw() {
   ctx.save()
-  if (state.screenShake > 0) ctx.translate(rand(-7, 7) * state.screenShake, rand(-7, 7) * state.screenShake)
+  if (state.screenShake > 0) {
+    const shake = Math.min(5, state.screenShake * 7)
+    ctx.translate(rand(-shake, shake), rand(-shake, shake))
+  }
   drawBackground()
   drawMeteors()
   drawPowerups()
