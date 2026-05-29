@@ -346,26 +346,41 @@ body.app-fullscreen {
   overflow: hidden;
 }
 
-body.app-fullscreen .stage-wrap {
+body.app-fullscreen::before {
+  content: "";
   position: fixed;
   inset: 0;
+  z-index: 9998;
+  background: #020607;
+}
+
+body.app-fullscreen .stage-wrap {
+  position: fixed;
+  left: 50%;
+  top: 50%;
   z-index: 9999;
-  width: 100vw;
-  height: 100dvh;
+  width: min(100vw, calc(100dvh * 1.777777));
+  height: min(100dvh, calc(100vw * 0.5625));
   max-width: none;
-  aspect-ratio: auto;
+  aspect-ratio: 16 / 9;
   border: 0;
   border-radius: 0;
+  transform: translate(-50%, -50%);
 }
 
 .stage-wrap:fullscreen,
 .stage-wrap:-webkit-full-screen {
-  width: 100vw;
-  height: 100vh;
-  aspect-ratio: auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(100vw, calc(100vh * 1.777777));
+  height: min(100vh, calc(100vw * 0.5625));
+  max-width: none;
+  aspect-ratio: 16 / 9;
   border: 0;
   border-radius: 0;
   background: #020607;
+  transform: translate(-50%, -50%);
 }
 
 body.app-fullscreen canvas,
@@ -373,6 +388,21 @@ body.app-fullscreen canvas,
 .stage-wrap:-webkit-full-screen canvas {
   width: 100%;
   height: 100%;
+}
+
+@media (orientation: portrait) {
+  body.app-fullscreen .stage-wrap {
+    width: min(100dvh, calc(100vw * 1.777777));
+    height: min(100vw, calc(100dvh * 0.5625));
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .stage-wrap:fullscreen,
+  .stage-wrap:-webkit-full-screen {
+    width: min(100vh, calc(100vw * 1.777777));
+    height: min(100vw, calc(100vh * 0.5625));
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
 }
 
 @media (max-width: 1160px) {

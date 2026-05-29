@@ -415,10 +415,17 @@ function pageInspectionExpression(game) {
       }
     }
     let fullscreenProbe = false;
+    let fullscreenStageRatio = 0;
+    let fullscreenTransform = "";
     if (fullscreenButton) {
       fullscreenButton.click();
       await new Promise((resolve) => setTimeout(resolve, 80));
       fullscreenProbe = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("app-fullscreen") || fullscreenButton.textContent.trim() === "EXIT");
+      if (stage) {
+        const style = getComputedStyle(stage);
+        fullscreenStageRatio = parseFloat(style.width) / parseFloat(style.height);
+        fullscreenTransform = style.transform;
+      }
       if (document.body.classList.contains("app-fullscreen")) {
         fullscreenButton.click();
       } else if (document.fullscreenElement && document.exitFullscreen) {
@@ -459,6 +466,8 @@ function pageInspectionExpression(game) {
       missionTextLength: missionText.length,
       fullscreenExists: Boolean(fullscreenButton),
       fullscreenProbe,
+      fullscreenStageRatio,
+      fullscreenTransform,
       mobileLayerDisplay: mobileLayer ? getComputedStyle(mobileLayer).display : "",
       joystickExists: Boolean(joystick),
       joystickDisplay: joystick ? getComputedStyle(joystick).display : "",
@@ -472,6 +481,7 @@ function pageInspectionExpression(game) {
       expectsJoystick: ${Boolean(game.joystick)},
       minMobileActions: ${game.minMobileActions || 0},
       isNarrow: window.innerWidth <= 560,
+      isPortrait: window.innerHeight > window.innerWidth,
     };
   })()`;
 }
@@ -518,6 +528,8 @@ function validateInspection(value, errors) {
   if (value.missionTextLength < 2) return "mission/status text not found";
   if (!value.fullscreenExists) return "fullscreen button not found";
   if (!value.fullscreenProbe) return "fullscreen button did not enter native or fallback fullscreen";
+  if (Math.abs(value.fullscreenStageRatio - 16 / 9) > 0.035) return `fullscreen stage ratio ${value.fullscreenStageRatio.toFixed(4)} is not 16:9`;
+  if (value.isNarrow && value.isPortrait && value.fullscreenTransform === "none") return "fullscreen portrait mode did not rotate the stage";
   if (value.isNarrow) {
     if (value.mobileLayerDisplay === "none") return "mobile control layer is hidden on narrow screens";
     if (value.expectsJoystick && !value.joystickExists) return "mobile joystick not found";

@@ -1769,6 +1769,8 @@ function bindFullscreenButton() {
   const target = stage || document.documentElement;
   const fullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
   const appFullscreen = () => document.body.classList.contains("app-fullscreen");
+  const lockLandscape = () => screen.orientation?.lock?.("landscape").catch(() => {});
+  const unlockOrientation = () => screen.orientation?.unlock?.();
   const updateLabel = () => {
     const active = Boolean(fullscreenElement()) || appFullscreen();
     button.textContent = active ? "EXIT" : "FS";
@@ -1780,6 +1782,7 @@ function bindFullscreenButton() {
   };
   const exitFallback = () => {
     document.body.classList.remove("app-fullscreen");
+    unlockOrientation();
   };
   button.addEventListener("click", async () => {
     try {
@@ -1793,9 +1796,11 @@ function bindFullscreenButton() {
         const request = target.requestFullscreen || target.webkitRequestFullscreen;
         if (request) await request.call(target);
         else enterFallback();
+        lockLandscape();
       }
     } catch {
       if (!fullscreenElement() && !appFullscreen()) enterFallback();
+      lockLandscape();
     }
     updateLabel();
   });
