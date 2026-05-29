@@ -827,3 +827,4 @@
 - V822: Extended engine upgrades to improve vertical thrust as well as horizontal movement.
 - V823: Scaled overdrive duration with engine level and recovered relics.
 - V824: Updated UI and README copy for four-way movement, missions, relics, and overdrive.
+- V825: Removed camera translation from screen-shake events so Space Bee no longer disrupts aiming or dodging during explosions, hits, nukes, or surprise waves.

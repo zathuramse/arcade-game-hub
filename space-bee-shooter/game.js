@@ -2340,10 +2340,6 @@ function drawScreenFlash() {
 
 function draw() {
   ctx.save()
-  if (state.screenShake > 0) {
-    const shake = Math.min(5, state.screenShake * 7)
-    ctx.translate(rand(-shake, shake), rand(-shake, shake))
-  }
   drawBackground()
   drawMeteors()
   drawPowerups()
