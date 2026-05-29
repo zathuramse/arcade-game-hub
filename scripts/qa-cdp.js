@@ -32,6 +32,13 @@ const GAMES = [
   },
 ];
 
+const HUBS = [
+  {
+    name: "game-collection",
+    path: "/game-collection/",
+  },
+];
+
 const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900, mobile: false },
   { name: "mobile-portrait", width: 390, height: 844, mobile: true },
@@ -81,6 +88,13 @@ async function main() {
         printResult(result.pass, game.name, viewport.name, result.reason);
       }
     }
+    for (const hub of HUBS) {
+      for (const viewport of VIEWPORTS) {
+        const result = await inspectHub(client, new URL(hub.path, baseUrl).toString(), hub, viewport);
+        if (!result.pass) failures.push(result);
+        printResult(result.pass, hub.name, viewport.name, result.reason);
+      }
+    }
   } finally {
     await client.close().catch(() => {});
     await stopProcess(chrome.process);
@@ -96,7 +110,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log("\nQA passed: all games meet the automated layout, canvas, mission, and shake checks.");
+  console.log("\nQA passed: all game and collection targets meet the automated layout, canvas, mission, mobile, and shake checks.");
 }
 
 function parseArgs(args) {
@@ -303,6 +317,55 @@ async function inspectGame(browser, url, game, viewport) {
   }
 }
 
+async function inspectHub(browser, url, hub, viewport) {
+  const errors = [];
+  const target = await browser.send("Target.createTarget", { url: "about:blank" });
+  const attached = await browser.send("Target.attachToTarget", { targetId: target.targetId, flatten: true });
+  const sessionId = attached.sessionId;
+
+  const onMessage = (message) => {
+    if (message.sessionId !== sessionId) return;
+    if (message.method === "Runtime.exceptionThrown") {
+      errors.push(message.params.exceptionDetails?.text || "runtime exception");
+    }
+    if (message.method === "Log.entryAdded" && message.params.entry.level === "error") {
+      errors.push(message.params.entry.text);
+    }
+    if (message.method === "Runtime.consoleAPICalled" && message.params.type === "error") {
+      errors.push("console.error");
+    }
+  };
+
+  browser.onMessage.add(onMessage);
+  try {
+    await browser.send("Runtime.enable", {}, sessionId);
+    await browser.send("Log.enable", {}, sessionId);
+    await browser.send("Page.enable", {}, sessionId);
+    await browser.send("Emulation.setDeviceMetricsOverride", {
+      width: viewport.width,
+      height: viewport.height,
+      deviceScaleFactor: 1,
+      mobile: viewport.mobile,
+    }, sessionId);
+
+    await browser.send("Page.navigate", { url }, sessionId);
+    await waitForPageLoad(browser, sessionId);
+    await sleep(1000);
+
+    const evaluation = await browser.send("Runtime.evaluate", {
+      expression: hubInspectionExpression(),
+      returnByValue: true,
+      awaitPromise: true,
+    }, sessionId);
+    const value = evaluation.result.value;
+    const reason = validateHubInspection(value, errors);
+    return { pass: !reason, game: hub.name, viewport: viewport.name, reason: reason || "hub layout, cards, actions, and mobile mode checks passed" };
+  } finally {
+    browser.onMessage.delete(onMessage);
+    await browser.send("Target.closeTarget", { targetId: target.targetId }).catch(() => {});
+  }
+}
+
 function pageInspectionExpression(missionSelectors) {
   return `(() => {
     const stage = document.querySelector(".stage-wrap");
@@ -351,6 +414,34 @@ function pageInspectionExpression(missionSelectors) {
   })()`;
 }
 
+function hubInspectionExpression() {
+  return `(() => {
+    const doc = document.documentElement;
+    const body = document.body;
+    const shell = document.querySelector(".hub-shell");
+    const player = document.querySelector(".player-panel");
+    const frame = document.querySelector(".frame-wrap");
+    const openButton = document.querySelector("#openButton");
+    const cards = [...document.querySelectorAll(".game-card:not(.empty)")];
+    const firstCard = cards[0];
+    const shellRect = shell ? shell.getBoundingClientRect() : null;
+    const firstCardRect = firstCard ? firstCard.getBoundingClientRect() : null;
+    const horizontalOverflow = Math.max(doc.scrollWidth, body.scrollWidth) > window.innerWidth + 2;
+    return {
+      shellExists: Boolean(shell),
+      playerExists: Boolean(player),
+      openButtonExists: Boolean(openButton),
+      gameCardCount: cards.length,
+      horizontalOverflow,
+      shellWidth: shellRect ? shellRect.width : 0,
+      viewportWidth: window.innerWidth,
+      frameDisplay: frame ? getComputedStyle(frame).display : "",
+      firstCardHeight: firstCardRect ? firstCardRect.height : 0,
+      isNarrow: window.innerWidth <= 560,
+    };
+  })()`;
+}
+
 function validateInspection(value, errors) {
   if (errors.length) return `console/runtime errors: ${errors.slice(0, 3).join("; ")}`;
   if (!value.stageExists) return ".stage-wrap not found";
@@ -361,6 +452,19 @@ function validateInspection(value, errors) {
   if (value.horizontalOverflow) return "horizontal overflow detected";
   if (!value.canvasNonBlank) return `canvas appears blank or too flat, variance ${value.canvasVariance}`;
   if (value.missionTextLength < 2) return "mission/status text not found";
+  return "";
+}
+
+function validateHubInspection(value, errors) {
+  if (errors.length) return `console/runtime errors: ${errors.slice(0, 3).join("; ")}`;
+  if (!value.shellExists) return ".hub-shell not found";
+  if (!value.playerExists) return ".player-panel not found";
+  if (!value.openButtonExists) return "open game action not found";
+  if (value.gameCardCount < 4) return `expected at least 4 playable cards, found ${value.gameCardCount}`;
+  if (value.shellWidth > value.viewportWidth + 2) return `hub width ${value.shellWidth}px exceeds viewport ${value.viewportWidth}px`;
+  if (value.horizontalOverflow) return "horizontal overflow detected";
+  if (value.isNarrow && value.frameDisplay !== "none") return "mobile hub still shows embedded iframe";
+  if (value.isNarrow && value.firstCardHeight > 130) return `mobile cards are too tall (${value.firstCardHeight}px)`;
   return "";
 }
 

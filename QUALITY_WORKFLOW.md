@@ -87,6 +87,15 @@ node scripts/qa-cdp.js --base-url=https://65c3a419.arcade-game-hub.pages.dev/
 8. 任務或狀態文字存在。
 9. console 沒有 error。
 
+集合頁也必須通過：
+
+1. `.hub-shell`、`.player-panel`、啟動遊戲按鈕存在。
+2. 至少 4 個可玩的遊戲卡片存在。
+3. 桌機可以使用內嵌 16:9 預覽。
+4. 手機窄螢幕隱藏內嵌 iframe，改以精簡卡片與開啟遊戲按鈕為主要入口。
+5. 手機卡片高度不能回到桌機式大卡片。
+6. 桌機與手機皆不能有水平 overflow。
+
 Space Bee Shooter 額外檢查：
 
 1. `draw()` 內不得使用 `ctx.translate()` 做主畫面位移。

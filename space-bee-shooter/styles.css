@@ -509,3 +509,106 @@ canvas {
     display: none;
   }
 }
+
+@media (max-width: 560px) {
+  .game-shell {
+    width: calc(100vw - 12px);
+    min-height: 100dvh;
+    gap: 8px;
+    padding: 6px 0 10px;
+  }
+
+  .hud {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .hud div {
+    min-height: 42px;
+    padding: 6px 7px;
+  }
+
+  .hud span,
+  .mission-panel span {
+    font-size: 9px;
+  }
+
+  .hud strong {
+    font-size: 16px;
+  }
+
+  .stage-wrap {
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .overlay {
+    padding: 10px;
+  }
+
+  .overlay > div {
+    gap: 8px;
+    padding: 14px;
+  }
+
+  .overlay h1,
+  .overlay h2 {
+    font-size: clamp(24px, 8vw, 34px);
+  }
+
+  .overlay p,
+  .overlay span {
+    display: none;
+  }
+
+  .overlay button {
+    min-height: 38px;
+  }
+
+  .controls {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .controls button,
+  .arsenal-panel button {
+    min-height: 40px;
+    font-size: 12px;
+  }
+
+  #fireButton {
+    grid-column: span 2;
+  }
+
+  .mission-panel {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .mission-panel article,
+  .mission-panel div {
+    min-height: 52px;
+    padding: 8px;
+  }
+
+  .mission-panel article {
+    grid-column: 1 / -1;
+  }
+
+  .mission-panel strong {
+    font-size: 15px;
+  }
+
+  .mission-panel small {
+    display: none;
+  }
+
+  .arsenal-panel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .upgrade-panel {
+    display: none;
+  }
+}

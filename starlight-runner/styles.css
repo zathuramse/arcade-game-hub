@@ -327,3 +327,85 @@ canvas {
     padding: 9px 13px;
   }
 }
+
+@media (max-width: 560px) {
+  .shell {
+    min-height: 100dvh;
+    padding: 6px;
+    gap: 8px;
+  }
+
+  .topbar {
+    gap: 8px;
+  }
+
+  .brand {
+    min-height: 54px;
+    padding: 9px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand h1 {
+    font-size: 19px;
+  }
+
+  .hud {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hud div {
+    min-height: 44px;
+    padding: 7px;
+  }
+
+  .hud span,
+  .info-row span {
+    font-size: 9px;
+  }
+
+  .hud strong {
+    font-size: 16px;
+  }
+
+  .stage-wrap {
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .info-row {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .info-row article {
+    padding: 8px;
+  }
+
+  .info-row article:nth-child(n + 2) {
+    display: none;
+  }
+
+  .info-row strong {
+    font-size: 14px;
+  }
+
+  .info-row small {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .touch-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .touch-controls button {
+    min-height: 44px;
+    font-size: 12px;
+  }
+}

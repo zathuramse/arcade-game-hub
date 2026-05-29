@@ -362,3 +362,120 @@ canvas {
     gap: 10px;
   }
 }
+
+@media (max-width: 560px) {
+  .shell {
+    min-height: 100dvh;
+    padding: 6px;
+    gap: 8px;
+  }
+
+  .topbar,
+  .layout {
+    gap: 8px;
+  }
+
+  .brand {
+    min-height: 54px;
+    padding: 9px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand h1 {
+    font-size: 19px;
+  }
+
+  .scoreboard {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .scoreboard div {
+    min-height: 44px;
+    padding: 7px;
+  }
+
+  .scoreboard span,
+  .panel span,
+  .ability-row span {
+    font-size: 9px;
+  }
+
+  .scoreboard strong {
+    font-size: 16px;
+  }
+
+  .stage-wrap {
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .layout > .panel:not(.ai-panel) {
+    order: 2;
+  }
+
+  .ai-panel {
+    display: none;
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .panel article {
+    padding: 8px;
+  }
+
+  .panel article:nth-child(n + 2) {
+    display: none;
+  }
+
+  .panel strong {
+    font-size: 14px;
+  }
+
+  .panel small {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .ability-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .ability-row button,
+  .touch-zone button {
+    min-height: 44px;
+  }
+
+  .touch-zone {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .overlay {
+    padding: 10px;
+  }
+
+  .overlay > div {
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .overlay h2 {
+    font-size: clamp(24px, 8vw, 34px);
+  }
+
+  .overlay p,
+  .overlay span {
+    display: none;
+  }
+}
